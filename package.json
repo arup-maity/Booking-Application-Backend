@@ -1,0 +1,27 @@
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.10.1",
+    "@hono/zod-validator": "^0.2.1",
+    "@neondatabase/serverless": "^0.9.1",
+    "@prisma/adapter-neon": "^5.12.1",
+    "@prisma/client": "^5.12.1",
+    "@types/bcrypt": "^5.0.2",
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.2.0",
+    "dotenv": "^16.4.5",
+    "hono": "^4.2.5",
+    "razorpay": "^2.9.4",
+    "stripe": "^15.10.0",
+    "ws": "^8.16.0",
+    "zod": "^3.22.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "@types/ws": "^8.5.10",
+    "prisma": "^5.12.1",
+    "tsx": "^4.7.1"
+  }
+}
