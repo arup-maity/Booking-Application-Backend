@@ -34,7 +34,7 @@ app.route("/admin/flight", flight)
 app.route("/flight", flightController)
 app.route("/checkout", checkout)
 
-const port = 5000;
+const port = 8000;
 console.log(`Server is running on port ${port}`);
 
 serve({
