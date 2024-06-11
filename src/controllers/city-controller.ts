@@ -1144,7 +1144,12 @@ city.post('create-city', async c => {
       const body = await c.req.json()
       // check cityCode exists
       const cityName = await prisma.cities.findUnique({
-         where: { cityName: body.cityName }
+         where: {
+            cityName_countryName: {
+               cityName: body.cityName,
+               countryName: body.countryName
+            }
+         }
       })
       if (cityName) return c.json({ success: false, message: 'City Name already exists' }, 409)
       // create city

@@ -682,7 +682,7 @@ airport.post("demo-airport", async c => {
       const allCities = [...indiaAirport, ...japanAirport, ...unitedStatesAirport, ...germanyAirport]
 
       allCities?.map(async (city, index) => {
-         const cityy = await prisma.cities.findFirst({
+         const cityy: any = await prisma.cities.findFirst({
             where: {
                cityName: city.cityName,
                countryCode: city.countryCode

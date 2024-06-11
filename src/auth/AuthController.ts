@@ -11,7 +11,7 @@ const auth = new Hono()
 auth.post("/admin/login", zValidator('json', loginSchema), async c => {
    try {
       const body = await c.req.json()
-      const user = await prisma.adminUser.findFirst({
+      const user: any = await prisma.adminUser.findFirst({
          where: {
             email: body.email
          },
@@ -20,7 +20,7 @@ auth.post("/admin/login", zValidator('json', loginSchema), async c => {
          }
       })
       if (!user) return c.json({ success: false, message: 'User not found' })
-      const isPasswordValid = await bcrypt.compareSync(body.password, user.AdminUserAuth.password)
+      const isPasswordValid = await bcrypt.compareSync(body.password, user?.AdminUserAuth.password)
       if (!isPasswordValid) return c.json({ success: false, message: 'Email and Password not match' })
       const payload = {
          id: user?.id,

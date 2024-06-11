@@ -69,6 +69,8 @@ model Cities {
    airports    Airports?
    createdAt   DateTime  @default(now())
    updatedAt   DateTime  @updatedAt
+
+   @@unique([cityName, countryName])
 }
 
 model Airports {

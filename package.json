@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc && tsc-alias",
+    "devv": "nodemon --exec node -r esbuild-register src/app.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.10.1",
@@ -22,6 +24,8 @@
     "@types/node": "^20.11.17",
     "@types/ws": "^8.5.10",
     "prisma": "^5.12.1",
-    "tsx": "^4.7.1"
+    "tsx": "^4.7.1",
+    "tsc-alias": "^1.8.8",
+    "typescript": "^5.4.3"
   }
 }

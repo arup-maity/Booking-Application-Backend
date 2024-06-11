@@ -47,7 +47,7 @@ flight.put("update-flight/:id", async c => {
 flight.get("read-flight/:id", async c => {
    try {
       const id = c.req.param("id")
-      const flight = await prisma.flight.findUnique({
+      const flight = await prisma.flights.findUnique({
          where: {
             id: +id
          }
@@ -60,7 +60,7 @@ flight.get("read-flight/:id", async c => {
 flight.delete("delete-flight/:id", async c => {
    try {
       const id = c.req.param("id")
-      const flight = await prisma.flight.delete({
+      const flight = await prisma.flights.delete({
          where: {
             id: +id
          }
