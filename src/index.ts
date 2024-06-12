@@ -11,13 +11,14 @@ import flightController from "./flight/FlightController";
 import checkout from "./checkout/CheckoutController";
 import { checkAdminToken } from "./middleware";
 import city from "./city/controller";
+import publicAirport from "./airport/publicController";
 dotenv.config();
 
 const app = new Hono();
 app.use(
    "/*",
    cors({
-      origin: [process.env.ALLOWED_ORIGIN_WEB || "http://localhost:3001"],
+      origin: ['*'],
       allowMethods: ["POST", "GET", "PUT", "DELETE"],
       credentials: true
    })
@@ -31,6 +32,7 @@ app.use("/admin/*", checkAdminToken)
 app.route("/auth", auth)
 app.route("/admin/user", adminUser)
 app.route("/admin/city", city)
+app.route("/airport", publicAirport)
 // 
 app.route("/admin/airport", airport)
 app.route("/airport", airport)
