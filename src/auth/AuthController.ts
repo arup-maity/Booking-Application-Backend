@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { decode, sign, verify } from 'hono/jwt'
+import { sign, verify } from 'hono/jwt'
 import { getCookie, setCookie, } from 'hono/cookie'
 import { zValidator } from '@hono/zod-validator'
 import bcrypt from "bcrypt";
@@ -27,7 +27,7 @@ auth.post("/admin/login", zValidator('json', loginSchema), async c => {
          role: user?.role,
          accessPurpose: 'admin',
          purpose: 'login',
-         exp: Math.floor(Date.now() / 1000) + 60 * 60, // Token expires in 5 minutes
+         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 6, // Token expires in 5 minutes
       }
       const token = await sign(payload, process.env.JWT_SECRET as string)
       // Regular cookies
@@ -42,13 +42,19 @@ auth.post("/admin/login", zValidator('json', loginSchema), async c => {
       return c.json({ message: error.message }, 500)
    }
 })
-auth.get('check-login', async c => {
+auth.get('check-auth', async c => {
    try {
-      const { authorization } = c.req.header();
-      if (!authorization || !authorization.startsWith('Bearer ')) {
-         return c.json({ login: false, message: 'token not found' }, 200)
+      const cookie_token = getCookie(c, 'token')
+
+      function getToken() {
+         const { authorization } = c.req.header();
+         if (!authorization || !authorization.startsWith('Bearer ')) {
+            return c.json({ login: false, message: 'token not found' }, 200)
+         }
+         return authorization.split(' ')[1]
       }
-      const token = authorization.split(' ')[1];
+      const token = cookie_token || getToken() as string
+
       const tokenVerify = await verify(token, process.env.JWT_SECRET!)
       if (!tokenVerify) return c.json({ login: false, message: "token is not valid" }, 409)
       if (tokenVerify.purpose !== 'login') return c.json({ login: false, message: 'this token not for login purpose' }, 409)
@@ -57,19 +63,5 @@ auth.get('check-login', async c => {
       return c.json({ login: false, error: error }, 500)
    }
 })
-auth.get('check-auth', async c => {
-   try {
-      // get token
-      const token = getCookie(c, 'token')
-      if (!token) return c.json({ success: false, message: 'Token not found' }, 409)
-      // token vaerificate
-      const tokenVerify = await verify(token, process.env.JWT_SECRET!)
-      if (!tokenVerify) return c.json({ success: false, message: "token is not valid" }, 409)
 
-      if (tokenVerify.purpose !== 'login') return c.json({ success: false, message: '' }, 409)
-      return c.json({ success: true, payload: tokenVerify }, 200)
-   } catch (error) {
-      return c.json({ success: false, message: 'token is expire' }, 500)
-   }
-})
 export default auth

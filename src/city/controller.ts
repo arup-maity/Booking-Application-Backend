@@ -1151,7 +1151,7 @@ city.post('create-city', async c => {
             }
          }
       })
-      if (cityName) return c.json({ success: false, message: 'City Name already exists' }, 409)
+      if (cityName) return c.json({ success: false, message: 'City Name already exists on this country' }, 409)
       // create city
       const city = await prisma.cities.create({
          data: { ...body }
@@ -1231,34 +1231,6 @@ city.get("all-cities", async c => {
          where: conditions
       })
       return c.json({ success: true, cities, count }, 200)
-   } catch (error) {
-      return c.json({ success: false, error }, 500)
-   }
-})
-city.get("search-city", async c => {
-   try {
-      const search = c.req.query('search')
-      const cities = await prisma.cities.findMany({
-         // where: {
-         //    cityName: { contains: search, mode: "insensitive" }
-         // }
-         where: {
-            OR: [
-               {
-                  cityName: { contains: search, mode: "insensitive" }
-               },
-               {
-                  airports: {
-                     iataCode: { contains: search, mode: "insensitive" }
-                  }
-               },
-            ]
-         },
-         include: {
-            airports: true
-         }
-      })
-      return c.json({ success: true, cities }, 200)
    } catch (error) {
       return c.json({ success: false, error }, 500)
    }

@@ -39,24 +39,24 @@ adminUser.post("create-user", zValidator('json', userSchema), async c => {
       return c.json({ success: false, error: error }, 500)
    }
 })
-adminUser.put("/update-user", async c => {
-   try {
-      const body = await c.req.json()
-      const adminUser = await prisma.adminUser.update({
-         where: {
-            id: body.id
-         },
-         data: {
-            firstName: body.firstName,
-            lastName: body.lastName,
-            email: body.email
-         }
-      })
-      return c.json({ success: true, adminUser }, 200)
-   } catch (error) {
-      return c.json({ success: false, error: error }, 500)
-   }
-})
+// adminUser.put("/update-user", async c => {
+//    try {
+//       const body = await c.req.json()
+//       const adminUser = await prisma.adminUser.update({
+//          where: {
+//             id: body.id
+//          },
+//          data: {
+//             firstName: body.firstName,
+//             lastName: body.lastName,
+//             email: body.email
+//          }
+//       })
+//       return c.json({ success: true, adminUser }, 200)
+//    } catch (error) {
+//       return c.json({ success: false, error: error }, 500)
+//    }
+// })
 adminUser.delete("/delete-user/:id", async c => {
    try {
       const id = c.req.param("id")
@@ -78,5 +78,20 @@ adminUser.get("all-users", async c => {
       return c.json({ success: false, error: error }, 500)
    }
 })
-
+adminUser.put("update-user-role", async c => {
+   try {
+      const body = await c.req.json()
+      const adminUser = await prisma.adminUser.update({
+         where: {
+            id: body.id
+         },
+         data: {
+            role: body.role
+         }
+      })
+      return c.json({ success: true, adminUser }, 200)
+   } catch (error) {
+      return c.json({ success: false, error: error }, 500)
+   }
+})
 export default adminUser
