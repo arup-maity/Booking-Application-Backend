@@ -15,14 +15,14 @@ import publicAirport from "./airport/publicController";
 dotenv.config();
 
 const app = new Hono();
-// app.use(
-//    "/*",
-//    cors({
-//       origin: ['*'],
-//       allowMethods: ["POST", "GET", "PUT", "DELETE"],
-//       credentials: true
-//    })
-// );
+app.use(
+   "/*",
+   cors({
+      origin: [`${process.env.ALLOWED_ORIGIN_WEB}`, 'https://flight-booking-nu.vercel.app'],
+      allowMethods: ["POST", "GET", "PUT", "DELETE"],
+      credentials: true
+   })
+);
 app.get("/", c => {
    return c.text("Hello Hono!");
 });
