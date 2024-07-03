@@ -6,7 +6,7 @@ import { userSchema } from "./SchemaValidation";
 
 const adminUser = new Hono()
 
-adminUser.post("create-user", zValidator('json', userSchema), async c => {
+adminUser.post("/create-user", zValidator('json', userSchema), async c => {
    try {
       const body = await c.req.json()
       // check email exists
@@ -16,7 +16,7 @@ adminUser.post("create-user", zValidator('json', userSchema), async c => {
          }
       })
       if (email) {
-         return c.json({ success: false, message: "Email already exists" }, 400)
+         return c.json({ success: false, message: "Email already exists" }, 409)
       }
       //
       const salt = bcrypt.genSaltSync(16);
@@ -28,7 +28,7 @@ adminUser.post("create-user", zValidator('json', userSchema), async c => {
             lastName: body.lastName,
             email: body.email,
             role: body.role,
-            AdminUserAuth: {
+            adminUserAuth: {
                create: { password: hashPassword, method: 'password' }
             }
          }
@@ -70,7 +70,7 @@ adminUser.delete("/delete-user/:id", async c => {
       return c.json({ success: false, error: error }, 500)
    }
 })
-adminUser.get("all-users", async c => {
+adminUser.get("/all-users", async c => {
    try {
       const adminUsers = await prisma.adminUser.findMany()
       return c.json({ success: true, adminUsers }, 200)
@@ -78,7 +78,7 @@ adminUser.get("all-users", async c => {
       return c.json({ success: false, error: error }, 500)
    }
 })
-adminUser.put("update-user-role", async c => {
+adminUser.put("/update-user-role", async c => {
    try {
       const body = await c.req.json()
       const adminUser = await prisma.adminUser.update({
@@ -94,4 +94,5 @@ adminUser.put("update-user-role", async c => {
       return c.json({ success: false, error: error }, 500)
    }
 })
+
 export default adminUser

@@ -24,24 +24,29 @@ checkout.post("client-secret", async c => {
       //    },
       // });
       const paymentIntent = await stripe.paymentIntents.create({
-         description: 'Software development services',
-         shipping: {
-            name: 'Jenny Rosen',
-            address: {
-               line1: '510 Townsend St',
-               postal_code: '98140',
-               city: 'San Francisco',
-               state: 'CA',
-               country: 'US',
-            },
-         },
+         description: 'description',
+         // shipping: {
+         //    name: 'Jenny Rosen',
+         //    address: {
+         //       line1: '510 Townsend St',
+         //       postal_code: '98140',
+         //       city: 'San Francisco',
+         //       state: 'CA',
+         //       country: 'US',
+         //    },
+         // },
          amount: 1099,
          currency: 'inr',
          payment_method_types: ['card'],
+         metadata: {
+            bookingId: '6735',
+            email: 'jenny@stripe.com',
+            name: 'stripe'
+         }
       });
 
 
-      return c.json({ success: true, clientSecret: paymentIntent.client_secret }, 200)
+      return c.json({ success: true, clientSecret: paymentIntent.client_secret, paymentIntent }, 200)
    } catch (error) {
       console.log(error)
       return c.json({ success: false, error }, 500)
@@ -85,6 +90,32 @@ checkout.post("/callback", async c => {
             return c.redirect(`http://localhost:3001/?${razorpay_order_id}`)
          }
       }
+   } catch (error) {
+      return c.json({ success: false, error }, 500)
+   }
+})
+
+checkout.put('/update-payment-status/:id', async c => {
+   try {
+      const id = c.req.param("id")
+      const booking = await prisma.bookings.update({
+         where: {
+            id: +id
+         },
+         data: {
+            status: 'complete',
+            payments: {
+               update: {
+                  clientSecret: '',
+                  status: 'succeeded'
+               }
+            }
+         },
+         include: {
+            payments: true
+         }
+      })
+      return c.json({ success: true, booking }, 200)
    } catch (error) {
       return c.json({ success: false, error }, 500)
    }

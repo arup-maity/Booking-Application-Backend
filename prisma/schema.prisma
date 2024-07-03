@@ -14,15 +14,23 @@ datasource db {
    url      = env("DATABASE_URL")
 }
 
-model User {
-   id        Int        @id @default(autoincrement())
-   firstName String
-   lastName  String
-   email     String     @unique
-   userAuth  UserAuth?
-   Bookings  Bookings[]
+// ======================= User Table ====================
+model Users {
+   id           Int           @id @default(autoincrement())
+   fullName     String?
+   email        String        @unique
+   gender       String?
+   dob          String?
+   mobileNumber String?
+   profileImage String?
+   address      Json?
+   userAuth     UserAuth?
+   bookings     Bookings[]
+   userAddress  UserAddress[]
+   createdAt    DateTime      @default(now())
+   updatedAt    DateTime      @updatedAt
 
-   @@map("user")
+   @@map("users")
 }
 
 model UserAuth {
@@ -30,16 +38,27 @@ model UserAuth {
    password String?
    method   String
    userId   Int     @unique
-   user     User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+   user     Users   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
+model UserAddress {
+   id        Int     @id @default(autoincrement())
+   type      String
+   address   String
+   isDefault Boolean @default(false)
+   userId    Int
+   user      Users   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+// ======================= Admin User Table ==============
 model AdminUser {
    id            Int            @id @default(autoincrement())
    firstName     String
    lastName      String
    email         String         @unique
    role          AdminUserRole  @default(admin)
-   AdminUserAuth AdminUserAuth?
+   profileImage  String?
+   adminUserAuth AdminUserAuth?
    createdAt     DateTime       @default(now())
    updatedAt     DateTime       @updatedAt
 
@@ -64,13 +83,13 @@ enum AdminUserRole {
 
 // ////////////////////////////////////////////////////////////////
 model Cities {
-   id          Int       @id @default(autoincrement())
+   id          Int        @id @default(autoincrement())
    cityName    String
    countryName String
    countryCode String
-   airports    Airports?
-   createdAt   DateTime  @default(now())
-   updatedAt   DateTime  @updatedAt
+   airports    Airports[]
+   createdAt   DateTime   @default(now())
+   updatedAt   DateTime   @updatedAt
 
    @@unique([cityName, countryName])
 }
@@ -80,12 +99,14 @@ model Airports {
    airportName     String
    iataCode        String    @unique
    address         String?
-   cityId          Int       @unique
+   cityId          Int
    city            Cities    @relation(fields: [cityId], references: [id], onDelete: Cascade)
    departureFlight Flights[] @relation("departureAirport_airposrt")
    arrivalFlight   Flights[] @relation("arrivalAirport_airposrt")
    createdAt       DateTime  @default(now())
    updatedAt       DateTime  @updatedAt
+
+   @@unique([iataCode, cityId])
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -93,7 +114,7 @@ model Airplanes {
    id           Int       @id @default(autoincrement())
    modelNumber  String
    manufacturer String
-   capacity     Int
+   capacity     Int?
    Seats        Seats?
    Flights      Flights[]
 }
@@ -128,15 +149,38 @@ model Flights {
 
 ///////////////////////////////////////////////////////////////////////
 model Bookings {
-   id                 Int      @id @default(autoincrement())
-   flightId           Int
-   flight             Flights  @relation(fields: [flightId], references: [id])
-   userId             Int
-   user               User     @relation(fields: [userId], references: [id])
-   status             String
-   numberOfPassengers Int
-   totalCost          Decimal  @default(0.00)
-   bookingDate        DateTime @default(now())
-   createdAt          DateTime @default(now())
-   updatedAt          DateTime @updatedAt
+   id          Int           @id @default(autoincrement())
+   flightId    Int
+   flight      Flights       @relation(fields: [flightId], references: [id])
+   userId      Int
+   user        Users         @relation(fields: [userId], references: [id])
+   status      bookingStatus @default(pending)
+   passengers  Json
+   totalCost   Decimal       @default(0.00)
+   bookingDate DateTime      @default(now())
+   payments    Payments?
+   createdAt   DateTime      @default(now())
+   updatedAt   DateTime      @updatedAt
+
+   @@unique([id, flightId])
+}
+
+model Payments {
+   id           Int           @id @default(autoincrement())
+   bookingId    Int           @unique
+   booking      Bookings      @relation(fields: [bookingId], references: [id])
+   paymentId    String?
+   clientSecret String?
+   status       paymentStatus @default(pending)
+}
+
+enum paymentStatus {
+   pending
+   succeeded
+   rejected
+}
+
+enum bookingStatus {
+   pending
+   complete
 }

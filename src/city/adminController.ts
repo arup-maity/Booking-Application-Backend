@@ -1,9 +1,10 @@
 import { Hono } from "hono";
 import prisma from "../config/prisma";
+import { adminAuthentication } from "@/middleware";
 
-const city = new Hono()
+const adminCityRouter = new Hono()
 
-city.post('/admin/city/create-city', async c => {
+adminCityRouter.post('/create-city', adminAuthentication, async c => {
    try {
       const body = await c.req.json()
       // check cityCode exists
@@ -26,7 +27,7 @@ city.post('/admin/city/create-city', async c => {
       return c.json({ success: false, error }, 500)
    }
 })
-city.put("/admin/city/update-city/:id", async c => {
+adminCityRouter.put("/update-city/:id", adminAuthentication, async c => {
    try {
       const id = c.req.param("id")
       const body = await c.req.json()
@@ -41,7 +42,7 @@ city.put("/admin/city/update-city/:id", async c => {
       return c.json({ success: false, error }, 500)
    }
 })
-city.get("/admin/city/read-city/:id", async c => {
+adminCityRouter.get("/read-city/:id", adminAuthentication, async c => {
    try {
       const id = c.req.param("id")
       const city = await prisma.cities.findUnique({
@@ -55,21 +56,7 @@ city.get("/admin/city/read-city/:id", async c => {
       return c.json({ success: false, error }, 500)
    }
 })
-city.get("/city/read-city/:id", async c => {
-   try {
-      const id = c.req.param("id")
-      const city = await prisma.cities.findUnique({
-         where: { id: +id },
-         include: {
-            airports: true
-         }
-      })
-      return c.json({ success: true, city }, 200)
-   } catch (error) {
-      return c.json({ success: false, error }, 500)
-   }
-})
-city.delete("/admin/city/delete-city/:id", async c => {
+adminCityRouter.delete("/delete-city/:id", adminAuthentication, async c => {
    try {
       const id = c.req.param("id")
       const city = await prisma.cities.delete({
@@ -82,7 +69,7 @@ city.delete("/admin/city/delete-city/:id", async c => {
       return c.json({ success: false, error }, 500)
    }
 })
-city.get("/admin/city/all-cities", async c => {
+adminCityRouter.get("/all-cities", adminAuthentication, async c => {
    try {
       const { page = 1, limit = 25, search = '', orderColumn = '', order = '' } = c.req.query()
       const conditions: any = {}
@@ -113,4 +100,4 @@ city.get("/admin/city/all-cities", async c => {
       return c.json({ success: false, error }, 500)
    }
 })
-export default city
+export default adminCityRouter

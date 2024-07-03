@@ -13,5 +13,5 @@ export const userSchema = z.object({
       .regex(/[@#$&]/, { message: 'Password must contain at least one special character: @, #, $, &' })
       .regex(/^\S*$/, { message: 'Password must not contain any whitespace characters' })
       .regex(/^[a-zA-Z0-9@#$&]*$/, { message: 'Password can only contain letters, numbers, and special characters: @, #, $, &' }),
-   role: z.string().min(1)
+   role: z.string().min(1).optional()
 })
