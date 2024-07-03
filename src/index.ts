@@ -3,7 +3,6 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import dotenv from "dotenv";
 import city from "./city/controller";
-import { checkAdminToken } from "./middleware";
 import adminUser from "./admin-user/controller";
 import auth from "./auth/AuthController";
 import adminAirport from "./airport/adminController";
