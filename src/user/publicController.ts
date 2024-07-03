@@ -21,7 +21,7 @@ user.get("/profile-details", authorization, async (c: any) => {
       return c.json({ error }, 500)
    }
 })
-user.put("/profile-update", authorization, async c => {
+user.put("/profile-update", authorization, async (c: any) => {
    try {
       const body = await c.req.json()
       const updatedProfile = await prisma.users.update({
@@ -47,7 +47,7 @@ user.put("/change-password", authorization, async (c: any) => {
    try {
       const body = await c.req.json()
       // console.log('body', body)
-      const user = await prisma.users.findUnique({
+      const user: any = await prisma.users.findUnique({
          where: {
             id: +c.user.id
          },
@@ -80,7 +80,7 @@ user.put("/change-password", authorization, async (c: any) => {
       return c.json({ success: false, message: 'Password update failed' }, 500)
    }
 })
-user.get("/bookings-list", authorization, async c => {
+user.get("/bookings-list", authorization, async (c: any) => {
    try {
       const user = await prisma.users.findUnique({
          where: {
