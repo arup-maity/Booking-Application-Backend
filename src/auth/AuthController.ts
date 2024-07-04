@@ -95,17 +95,17 @@ auth.post("/user/login", async c => {
       const token = await sign(payload, process.env.JWT_SECRET as string)
       // Regular cookies
       setCookie(c, 'token', token, {
-         domain: 'flight-booking-nu.vercel.app',
          path: '/',
          secure: true,
          httpOnly: false,
-         sameSite: 'Strict',
+         sameSite: 'None',
       })
       return c.json({
          success: true,
          login: true,
          user: {
             id: user?.id,
+            name: user?.fullName,
             role: 'user',
             accessPurpose: 'user',
             purpose: 'login',
