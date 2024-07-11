@@ -59,7 +59,7 @@ app.route("/api/bookings", userBooking)
 app.route("/api/demo", demo)
 
 
-const port = 8000;
+const port = 8080;
 console.log(`Server is running on port ${port}`);
 
 serve({
