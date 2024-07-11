@@ -23,7 +23,7 @@ const app = new Hono();
 app.use(
    "/*",
    cors({
-      origin: [`${process.env.ALLOWED_ORIGIN_WEB}`, 'https://flight-booking-nu.vercel.app'],
+      origin: [`${process.env.ALLOWED_ORIGIN_WEB}`],
       allowMethods: ["POST", "GET", "PUT", "DELETE"],
       credentials: true
    })
@@ -60,7 +60,7 @@ app.route("/api/demo", demo)
 
 
 const port = 8080;
-console.log(`Server is running on port ${port}`);
+console.log(`${process.env.CHECK_ENV} server is running on port ${port}`);
 
 serve({
    fetch: app.fetch,
