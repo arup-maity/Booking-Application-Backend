@@ -97,7 +97,7 @@ auth.post("/user/login", async c => {
       setCookie(c, 'token', token, {
          path: '/',
          secure: true,
-         httpOnly: false,
+         httpOnly: true,
          sameSite: 'None',
       })
       return c.json({
