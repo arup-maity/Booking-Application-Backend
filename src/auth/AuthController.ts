@@ -99,6 +99,7 @@ auth.post("/user/login", async c => {
          secure: true,
          httpOnly: true,
          sameSite: 'None',
+         maxAge: 30 * 24 * 60 * 60, // Set maxAge in seconds (30 days)
       })
       return c.json({
          success: true,
