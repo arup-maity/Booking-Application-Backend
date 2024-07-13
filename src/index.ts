@@ -36,7 +36,7 @@ app.get("/", c => {
 // auth
 app.route("/api/auth", auth)
 //
-app.route("/api/admin", adminUser)
+app.route("/api/admin/user", adminUser)
 //
 app.route("/api/admin/city", adminCityRouter)
 app.route('/api/', city)

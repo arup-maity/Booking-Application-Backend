@@ -72,9 +72,35 @@ adminUser.delete("/delete-user/:id", async c => {
 })
 adminUser.get("/all-users", async c => {
    try {
-      const adminUsers = await prisma.adminUser.findMany()
-      return c.json({ success: true, adminUsers }, 200)
+      const { page = 1, limit = 25, search = '', role = '', column = 'createdAt', sortOrder = 'desc' } = c.req.query()
+      const conditions: any = {}
+      if (search) {
+         conditions.OR = [
+            { email: { contains: search, mode: "insensitive" } },
+            { firstName: { contains: search, mode: "insensitive" } },
+            { lastName: { contains: search, mode: "insensitive" } },
+            // Add more columns for full-text search as needed
+         ]
+      }
+      if (role && role !== 'all') {
+         conditions.role = role;
+      }
+      const query: any = {}
+      if (column && sortOrder) {
+         query.orderBy = { [column]: sortOrder }
+      }
+      const users = await prisma.adminUser.findMany({
+         where: conditions,
+         take: +limit,
+         skip: (+page - 1) * +limit,
+         ...query
+      })
+      const count = await prisma.adminUser.count({
+         where: conditions
+      })
+      return c.json({ success: true, users, count }, 200)
    } catch (error) {
+      console.log('error', error)
       return c.json({ success: false, error: error }, 500)
    }
 })

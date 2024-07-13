@@ -69,7 +69,7 @@ adminCityRouter.delete("/delete-city/:id", adminAuthentication, async c => {
       return c.json({ success: false, error }, 500)
    }
 })
-adminCityRouter.get("/all-cities", adminAuthentication, async c => {
+adminCityRouter.get("/all-cities", async c => {
    try {
       const { page = 1, limit = 25, search = '', orderColumn = '', order = '' } = c.req.query()
       const conditions: any = {}
