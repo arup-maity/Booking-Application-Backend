@@ -33,6 +33,7 @@ auth.post("/admin/login", zValidator('json', loginSchema), async c => {
       const token = await sign(payload, process.env.JWT_SECRET as string)
       // Regular cookies
       setCookie(c, 'token', token, {
+         domain: process.env.ENVIRONMENT === 'production' ? '.arupmaity.in' : 'localhost',
          path: '/',
          secure: true,
          httpOnly: false,
