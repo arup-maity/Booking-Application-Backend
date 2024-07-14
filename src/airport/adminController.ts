@@ -74,6 +74,19 @@ adminAirport.delete("/delete-airport/:id", adminAuthentication, async c => {
       return c.json({ success: false, error }, 500)
    }
 })
+adminAirport.post("/delete-airports/multiple", async c => {
+   try {
+      const body = await c.req.json()
+      const airports = await prisma.airports.deleteMany({
+         where: {
+            id: { in: body.rows }
+         }
+      })
+      return c.json({ success: true, airports }, 200)
+   } catch (error) {
+      return c.json({ success: false, error: error }, 500)
+   }
+})
 adminAirport.get("/all-airports", adminAuthentication, async c => {
    try {
       const { page = 1, limit = 25, search = '', orderColumn = '', order = '' } = c.req.query()

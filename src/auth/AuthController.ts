@@ -24,6 +24,7 @@ auth.post("/admin/login", zValidator('json', loginSchema), async c => {
       if (!isPasswordValid) return c.json({ success: false, message: 'Email and Password not match' })
       const payload = {
          id: user?.id,
+         name: `${user?.firstName + ' ' + user?.lastName}`,
          role: user?.role,
          accessPurpose: 'admin',
          purpose: 'login',
@@ -36,6 +37,7 @@ auth.post("/admin/login", zValidator('json', loginSchema), async c => {
          secure: true,
          httpOnly: false,
          sameSite: 'Strict',
+         maxAge: 30 * 24 * 60 * 60,
       })
       return c.json({ success: true, login: true }, 200)
    } catch (error: any) {

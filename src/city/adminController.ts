@@ -69,9 +69,22 @@ adminCityRouter.delete("/delete-city/:id", adminAuthentication, async c => {
       return c.json({ success: false, error }, 500)
    }
 })
+adminCityRouter.post("/delete-cities/multiple", async c => {
+   try {
+      const body = await c.req.json()
+      const cities = await prisma.cities.deleteMany({
+         where: {
+            id: { in: body.rows }
+         }
+      })
+      return c.json({ success: true, cities }, 200)
+   } catch (error) {
+      return c.json({ success: false, error: error }, 500)
+   }
+})
 adminCityRouter.get("/all-cities", async c => {
    try {
-      const { page = 1, limit = 25, search = '', orderColumn = '', order = '' } = c.req.query()
+      const { page = 1, limit = 25, search = '', column = 'createdAt', sortOrder = 'desc' } = c.req.query()
       const conditions: any = {}
       if (search) {
          conditions.cityName = {
@@ -80,8 +93,8 @@ adminCityRouter.get("/all-cities", async c => {
          }
       }
       const query: any = {}
-      if (orderColumn && order) {
-         query.orderBy = { [orderColumn]: order }
+      if (column && sortOrder) {
+         query.orderBy = { [column]: sortOrder }
       }
       const cities = await prisma.cities.findMany({
          where: conditions,

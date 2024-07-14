@@ -39,24 +39,6 @@ adminUser.post("/create-user", zValidator('json', userSchema), async c => {
       return c.json({ success: false, error: error }, 500)
    }
 })
-// adminUser.put("/update-user", async c => {
-//    try {
-//       const body = await c.req.json()
-//       const adminUser = await prisma.adminUser.update({
-//          where: {
-//             id: body.id
-//          },
-//          data: {
-//             firstName: body.firstName,
-//             lastName: body.lastName,
-//             email: body.email
-//          }
-//       })
-//       return c.json({ success: true, adminUser }, 200)
-//    } catch (error) {
-//       return c.json({ success: false, error: error }, 500)
-//    }
-// })
 adminUser.delete("/delete-user/:id", async c => {
    try {
       const id = c.req.param("id")
@@ -66,6 +48,19 @@ adminUser.delete("/delete-user/:id", async c => {
          }
       })
       return c.json({ success: true, adminUser }, 200)
+   } catch (error) {
+      return c.json({ success: false, error: error }, 500)
+   }
+})
+adminUser.post("/delete-users/multiple", async c => {
+   try {
+      const body = await c.req.json()
+      const adminUsers = await prisma.adminUser.deleteMany({
+         where: {
+            id: { in: body.rows }
+         }
+      })
+      return c.json({ success: true, adminUsers }, 200)
    } catch (error) {
       return c.json({ success: false, error: error }, 500)
    }

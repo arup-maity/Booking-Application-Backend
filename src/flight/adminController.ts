@@ -70,8 +70,33 @@ adminFlight.delete("delete-flight/:id", async c => {
       return c.json({ success: false, error }, 400)
    }
 })
+adminFlight.post("/delete-flight/multiple", async c => {
+   try {
+      const body = await c.req.json()
+      const flights = await prisma.flights.deleteMany({
+         where: {
+            id: { in: body.rows }
+         }
+      })
+      return c.json({ success: true, flights }, 200)
+   } catch (error) {
+      return c.json({ success: false, error: error }, 500)
+   }
+})
 adminFlight.get("all-flights", async c => {
    try {
+      const { page = 1, limit = 25, search = '', column = 'createdAt', sortOrder = 'desc' } = c.req.query()
+      const conditions: any = {}
+      if (search) {
+         conditions.flightNumber = {
+            contains: search,
+            mode: "insensitive"
+         }
+      }
+      const query: any = {}
+      if (column && sortOrder) {
+         query.orderBy = { [column]: sortOrder }
+      }
       const flights = await prisma.flights.findMany({
          include: {
             departureAirport: {
@@ -85,9 +110,15 @@ adminFlight.get("all-flights", async c => {
                }
             },
             airplane: true
-         }
+         },
+         take: +limit,
+         skip: (+page - 1) * +limit,
+         ...query
       })
-      return c.json({ success: true, flights }, 200)
+      const count = await prisma.flights.count({
+         where: conditions
+      })
+      return c.json({ success: true, flights, count }, 200)
    } catch (error) {
       return c.json({ success: false, error }, 400)
    }
