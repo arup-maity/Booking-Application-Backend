@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import prisma from "../config/prisma";
+import city from "@/city/controller";
 
 const demo = new Hono()
 
@@ -226,17 +227,37 @@ const china = [
 demo.post('/city', async c => {
    try {
       const cityList = [...india, ...japan, ...china]
+      console.log(cityList.length)
 
-      cityList?.map(async (city) =>
-         await prisma.cities.create({
-            data: {
-               cityName: city.cityName,
-               countryName: city.countryName,
-               countryCode: city.countryCode,
+      // cityList?.map(async (city) =>
+      //    await prisma.cities.create({
+      //       data: {
+      //          cityName: city.cityName,
+      //          countryName: city.countryName,
+      //          countryCode: city.countryCode,
+      //       }
+      //    })
+      // )
+      for (const city of cityList) {
+         const check = await prisma.cities.findUnique({
+            where: {
+               cityName_countryName: {
+                  cityName: city.cityName,
+                  countryName: city.countryName,
+               }
             }
          })
-      )
-      return c.json({ success: true }, 200)
+         if (!check) {
+            await prisma.cities.create({
+               data: {
+                  cityName: city.cityName,
+                  countryName: city.countryName,
+                  countryCode: city.countryCode,
+               },
+            });
+         }
+      }
+      return c.json({ success: true, for: 'city' }, 200)
    } catch (error) {
       console.log(error)
       return c.json({ success: false, error }, 500)
@@ -246,8 +267,29 @@ demo.post("/airport", async c => {
    try {
       const airportList = [...india, ...japan, ...china]
 
-      airportList?.map(async (airport) => {
-         const cityId = await prisma.cities.findUnique({
+      // airportList?.map(async (airport) => {
+      //    const cityId = await prisma.cities.findUnique({
+      //       where: {
+      //          cityName_countryName: {
+      //             cityName: airport.cityName,
+      //             countryName: airport.countryName,
+      //          }
+      //       }
+      //    })
+      //    if (cityId?.id) {
+      //       await prisma.airports.create({
+      //          data: {
+      //             airportName: airport.airportName,
+      //             iataCode: airport.iataCode,
+      //             cityId: cityId.id
+      //          }
+      //       })
+      //    } else {
+
+      //    }
+      // })
+      for (const airport of airportList) {
+         const check = await prisma.cities.findUnique({
             where: {
                cityName_countryName: {
                   cityName: airport.cityName,
@@ -255,21 +297,18 @@ demo.post("/airport", async c => {
                }
             }
          })
-         if (cityId?.id) {
+         if (check) {
             await prisma.airports.create({
                data: {
                   airportName: airport.airportName,
                   iataCode: airport.iataCode,
-                  cityId: cityId.id
+                  cityId: check.id
                }
             })
-         } else {
-
          }
       }
-      )
 
-      return c.json({ success: true }, 200)
+      return c.json({ success: true, for: 'airport' }, 200)
    } catch (error) {
       console.log(error)
       return c.json({ success: false, error }, 500)

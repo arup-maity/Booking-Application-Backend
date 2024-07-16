@@ -19,7 +19,7 @@ auth.post("/admin/login", zValidator('json', loginSchema), async c => {
             adminUserAuth: true
          }
       })
-      if (!user) return c.json({ success: false, message: 'User not found' })
+      if (!user) return c.json({ success: false, message: 'User not found' }, 409)
       const isPasswordValid = await bcrypt.compareSync(body.password, user?.adminUserAuth.password)
       if (!isPasswordValid) return c.json({ success: false, message: 'Email and Password not match' })
       const payload = {
@@ -50,9 +50,7 @@ auth.post("/user/register", async c => {
    try {
       const body = await c.req.json()
       const user: any = await prisma.users.findUnique({
-         where: {
-            email: body.email
-         }
+         where: { email: body.email }
       })
       if (user) return c.json({ success: false, message: 'User already exists' }, 409)
       const hashedPassword = bcrypt.hashSync(body.password, 10)
@@ -67,7 +65,24 @@ auth.post("/user/register", async c => {
             }
          }
       })
-      if (!newUser) return c.json({ success: false, message: 'Not create the account' })
+      if (!newUser) return c.json({ success: false, message: 'Not create the account' }, 409)
+      const payload = {
+         id: newUser?.id,
+         name: newUser?.fullName,
+         role: 'user',
+         purpose: 'login',
+         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 6, // Token expires in 5 minutes
+      }
+      const token = await sign(payload, process.env.JWT_SECRET as string)
+      // Regular cookies
+      setCookie(c, 'token', token, {
+         domain: process.env.ENVIRONMENT === 'production' ? '.arupmaity.in' : 'localhost',
+         path: '/',
+         secure: true,
+         httpOnly: process.env.ENVIRONMENT === 'production' ? true : false,
+         sameSite: 'Strict',
+         maxAge: 30 * 24 * 60 * 60, // Set maxAge in seconds (30 days)
+      })
       return c.json({ success: true, newUser }, 200)
    } catch (error: any) {
       console.log('Error creating', error)
@@ -85,9 +100,9 @@ auth.post("/user/login", async c => {
             userAuth: true
          }
       })
-      if (!user) return c.json({ success: false, message: 'User not found' })
+      if (!user) return c.json({ success: false, login: false, message: 'User not found' }, 200)
       const isPasswordValid = bcrypt.compareSync(body.password, user?.userAuth.password)
-      if (!isPasswordValid) return c.json({ success: false, message: 'Email and Password not match' })
+      if (!isPasswordValid) return c.json({ success: false, login: false, message: 'Email and Password not match' }, 200)
       const payload = {
          id: user?.id,
          name: user?.fullName,
@@ -98,10 +113,11 @@ auth.post("/user/login", async c => {
       const token = await sign(payload, process.env.JWT_SECRET as string)
       // Regular cookies
       setCookie(c, 'token', token, {
+         domain: process.env.ENVIRONMENT === 'production' ? '.arupmaity.in' : 'localhost',
          path: '/',
          secure: true,
          httpOnly: true,
-         sameSite: 'None',
+         sameSite: 'Strict',
          maxAge: 30 * 24 * 60 * 60, // Set maxAge in seconds (30 days)
       })
       return c.json({
