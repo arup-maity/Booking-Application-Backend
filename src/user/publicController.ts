@@ -1,11 +1,11 @@
 import { Hono } from "hono";
 import prisma from "../config/prisma";
 import bcrypt from "bcrypt";
-import { authorization } from "@/middleware";
+import { userAuthentication } from "@/middleware";
 
 const user = new Hono()
 
-user.get("/profile-details", authorization, async (c: any) => {
+user.get("/profile-details", userAuthentication, async (c: any) => {
    try {
       const profile = await prisma.users.findUnique({
          where: {
@@ -21,7 +21,7 @@ user.get("/profile-details", authorization, async (c: any) => {
       return c.json({ error }, 500)
    }
 })
-user.put("/profile-update", authorization, async (c: any) => {
+user.put("/profile-update", userAuthentication, async (c: any) => {
    try {
       const body = await c.req.json()
       const updatedProfile = await prisma.users.update({
@@ -43,7 +43,7 @@ user.put("/profile-update", authorization, async (c: any) => {
       return c.json({ error }, 500)
    }
 })
-user.put("/change-password", authorization, async (c: any) => {
+user.put("/change-password", userAuthentication, async (c: any) => {
    try {
       const body = await c.req.json()
       // console.log('body', body)
@@ -80,14 +80,26 @@ user.put("/change-password", authorization, async (c: any) => {
       return c.json({ success: false, message: 'Password update failed' }, 500)
    }
 })
-user.get("/bookings-list", authorization, async (c: any) => {
+user.get("/bookings-list", userAuthentication, async (c: any) => {
    try {
+      const { status = 'all' } = c.req.query()
+      const userId = c.user.id
+      const conditions: any = {}
+      if (status === 'all') {
+         conditions.status = 'complete'
+      } else if (status === 'failed') {
+         conditions.status = 'pending'
+         // conditions.status = { notIn: ['cancelled', 'completed'] }
+      } else {
+         conditions.status = 'pending'
+      }
       const user = await prisma.users.findUnique({
          where: {
-            id: +c.user.id
+            id: +userId
          },
          select: {
             bookings: {
+               where: conditions,
                include: {
                   flight: {
                      include: {

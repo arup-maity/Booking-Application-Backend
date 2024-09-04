@@ -1,0 +1,16 @@
+"use strict";
+// import { Pool, neonConfig } from "@neondatabase/serverless";
+// import { PrismaNeon } from "@prisma/adapter-neon";
+// import { PrismaClient } from "@prisma/client";
+// import dotenv from "dotenv";
+// import ws from "ws";
+Object.defineProperty(exports, "__esModule", { value: true });
+// dotenv.config();
+// neonConfig.webSocketConstructor = ws;
+// const connectionString = `${process.env.DATABASE_URL}`;
+// const pool = new Pool({ connectionString });
+// const adapter = new PrismaNeon(pool);
+// const prisma = new PrismaClient({ adapter });
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+exports.default = prisma;

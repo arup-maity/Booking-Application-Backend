@@ -4,7 +4,7 @@ import { getCookie, setCookie, } from 'hono/cookie'
 import { zValidator } from '@hono/zod-validator'
 import bcrypt from "bcrypt";
 import prisma from "../config/prisma";
-import { loginSchema } from "./SchemaValidation";
+import { loginSchema } from "../validation/SchemaValidation";
 
 const auth = new Hono()
 
@@ -40,7 +40,7 @@ auth.post("/admin/login", zValidator('json', loginSchema), async c => {
          sameSite: 'Strict',
          maxAge: 30 * 24 * 60 * 60,
       })
-      return c.json({ success: true, login: true }, 200)
+      return c.json({ success: true, login: true, payload }, 200)
    } catch (error: any) {
       console.log('error', error)
       return c.json({ message: error.message }, 500)
@@ -56,6 +56,7 @@ auth.post("/user/register", async c => {
       const hashedPassword = bcrypt.hashSync(body.password, 10)
       const newUser = await prisma.users.create({
          data: {
+            fullName: body.fullName,
             email: body.email,
             userAuth: {
                create: {
@@ -116,7 +117,7 @@ auth.post("/user/login", async c => {
          domain: process.env.ENVIRONMENT === 'production' ? '.arupmaity.in' : 'localhost',
          path: '/',
          secure: true,
-         httpOnly: true,
+         httpOnly: process.env.ENVIRONMENT === 'production' ? true : false,
          sameSite: 'Strict',
          maxAge: 30 * 24 * 60 * 60, // Set maxAge in seconds (30 days)
       })

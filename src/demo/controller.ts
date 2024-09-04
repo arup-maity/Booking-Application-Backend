@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import prisma from "../config/prisma";
 import city from "@/city/controller";
+import bcrypt from "bcrypt";
 
 const demo = new Hono()
 
@@ -223,7 +224,39 @@ const china = [
 
 
 
-
+demo.post('/admin-user', async c => {
+   try {
+      const body = await c.req.json()
+      // check email exists
+      const email = await prisma.adminUser.findUnique({
+         where: {
+            email: body.email
+         }
+      })
+      if (email) {
+         return c.json({ success: false, message: "Email already exists" }, 409)
+      }
+      //
+      const salt = bcrypt.genSaltSync(16);
+      const hashPassword = bcrypt.hashSync(body.password, salt);
+      // create admin user
+      const adminUser = await prisma.adminUser.create({
+         data: {
+            firstName: body.firstName,
+            lastName: body.lastName,
+            email: body.email,
+            role: body.role,
+            adminUserAuth: {
+               create: { password: hashPassword, method: 'password' }
+            }
+         }
+      })
+      return c.json({ success: true, adminUser }, 200)
+   } catch (error) {
+      console.log('Error creating admin user', error)
+      return c.json({ success: false, error: error }, 500)
+   }
+})
 demo.post('/city', async c => {
    try {
       const cityList = [...india, ...japan, ...china]

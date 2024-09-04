@@ -4,7 +4,7 @@ import { cors } from "hono/cors";
 import dotenv from "dotenv";
 import city from "./city/controller";
 import adminUser from "./admin-user/controller";
-import auth from "./auth/AuthController";
+import auth from "./controllers/AuthController";
 import adminAirport from "./airport/adminController";
 import adminAirplane from "./airplanes/adminController";
 import adminFlight from "./flight/adminController";
@@ -15,6 +15,7 @@ import userBooking from "./booking/bookingController";
 import user from "./user/publicController";
 import adminCityRouter from "./city/adminController";
 import demo from "./demo/controller";
+import adminBooking from "./booking/adminBookingController";
 // 
 
 dotenv.config();
@@ -55,6 +56,7 @@ app.route("/api/flight", publicFlight)
 app.route("/api/checkout", checkout)
 // bookings
 app.route("/api/bookings", userBooking)
+app.route("/api/admin/bookings", adminBooking)
 // demo
 app.route("/api/demo", demo)
 

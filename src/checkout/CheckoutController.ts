@@ -98,25 +98,38 @@ checkout.post("/callback", async c => {
 checkout.put('/update-payment-status/:id', async c => {
    try {
       const id = c.req.param("id")
-      const booking = await prisma.bookings.update({
+      //
+      const bookingDetails = await prisma.bookingProcess.findUnique({
          where: {
             id: +id
          },
+         include: {
+            PaymentsProcess: true
+         }
+      })
+      const booking = await prisma.bookings.create({
          data: {
+            userId: +bookingDetails?.userId,
+            flightId: bookingDetails.flightId,
+            passengers: bookingDetails.passengers,
             status: 'complete',
+            // seatNumber: body.seatNumber,
+            totalCost: bookingDetails.totalCost,
             payments: {
-               update: {
-                  clientSecret: '',
-                  status: 'succeeded'
+               create: {
+                  clientSecret: bookingDetails?.PaymentsProcess?.clientSecret,
+                  status: 'succeeded',
                }
             }
-         },
-         include: {
-            payments: true
          }
+      })
+      if (!booking) return c.json({ success: false, message: 'Error creating booking' }, 409)
+      await prisma.bookingProcess.delete({
+         where: { id: +id }
       })
       return c.json({ success: true, booking }, 200)
    } catch (error) {
+      console.log(error)
       return c.json({ success: false, error }, 500)
    }
 })
