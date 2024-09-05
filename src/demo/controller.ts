@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import prisma from "../config/prisma";
-import city from "@/city/controller";
 import bcrypt from "bcrypt";
 
 const demo = new Hono()
@@ -151,78 +150,268 @@ const japan = [
 ]
 const china = [
    {
-      cityName: 'Tokyo',
-      countryName: 'Japan',
-      countryCode: 'JP',
-      airportName: 'Narita International Airport',
-      iataCode: 'NRT'
+      cityName: 'Beijing',
+      countryName: 'China',
+      countryCode: 'CN',
+      airportName: 'Beijing Capital International Airport',
+      iataCode: 'PEK'
    },
    {
-      cityName: 'Tokyo',
-      countryName: 'Japan',
-      countryCode: 'JP',
-      airportName: 'Haneda Airport',
-      iataCode: 'HND'
+      cityName: 'Shanghai',
+      countryName: 'China',
+      countryCode: 'CN',
+      airportName: 'Shanghai Pudong International Airport',
+      iataCode: 'PVG'
    },
    {
-      cityName: 'Osaka',
-      countryName: 'Japan',
-      countryCode: 'JP',
-      airportName: 'Kansai International Airport',
-      iataCode: 'KIX'
+      cityName: 'Guangzhou',
+      countryName: 'China',
+      countryCode: 'CN',
+      airportName: 'Guangzhou Baiyun International Airport',
+      iataCode: 'CAN'
    },
    {
-      cityName: 'Nagoya',
-      countryName: 'Japan',
-      countryCode: 'JP',
-      airportName: 'Chubu Centrair International Airport',
-      iataCode: 'NGO'
+      cityName: 'Chengdu',
+      countryName: 'China',
+      countryCode: 'CN',
+      airportName: 'Chengdu Shuangliu International Airport',
+      iataCode: 'CTU'
    },
    {
-      cityName: 'Fukuoka',
-      countryName: 'Japan',
-      countryCode: 'JP',
-      airportName: 'Fukuoka Airport',
-      iataCode: 'FUK'
+      cityName: 'Shenzhen',
+      countryName: 'China',
+      countryCode: 'CN',
+      airportName: 'Shenzhen Baoan International Airport',
+      iataCode: 'SZX'
    },
    {
-      cityName: 'Sapporo',
-      countryName: 'Japan',
-      countryCode: 'JP',
-      airportName: 'New Chitose Airport',
-      iataCode: 'CTS'
-   },
-   {
-      cityName: 'Okinawa',
-      countryName: 'Japan',
-      countryCode: 'JP',
-      airportName: 'Naha Airport',
-      iataCode: 'OKA'
-   },
-   {
-      cityName: 'Hiroshima',
-      countryName: 'Japan',
-      countryCode: 'JP',
-      airportName: 'Hiroshima Airport',
-      iataCode: 'HIJ'
-   },
-   {
-      cityName: 'Sendai',
-      countryName: 'Japan',
-      countryCode: 'JP',
-      airportName: 'Sendai Airport',
-      iataCode: 'SDJ'
-   },
-   {
-      cityName: 'Kagoshima',
-      countryName: 'Japan',
-      countryCode: 'JP',
-      airportName: 'Kagoshima Airport',
-      iataCode: 'KOJ'
+      cityName: 'Kunming',
+      countryName: 'China',
+      countryCode: 'CN',
+      airportName: 'Kunming Changshui International Airport',
+      iataCode: 'KMG'
    }
 ]
-
-
+const russia = [
+   {
+      cityName: 'Moscow',
+      countryName: 'Russia',
+      countryCode: 'RU',
+      airportName: 'Sheremetyevo International Airport',
+      iataCode: 'SVO'
+   },
+   {
+      cityName: 'Moscow',
+      countryName: 'Russia',
+      countryCode: 'RU',
+      airportName: 'Domodedovo International Airport',
+      iataCode: 'DME'
+   },
+   {
+      cityName: 'Saint Petersburg',
+      countryName: 'Russia',
+      countryCode: 'RU',
+      airportName: 'Pulkovo Airport',
+      iataCode: 'LED'
+   },
+   {
+      cityName: 'Novosibirsk',
+      countryName: 'Russia',
+      countryCode: 'RU',
+      airportName: 'Tolmachevo Airport',
+      iataCode: 'OVB'
+   },
+   {
+      cityName: 'Yekaterinburg',
+      countryName: 'Russia',
+      countryCode: 'RU',
+      airportName: 'Koltsovo Airport',
+      iataCode: 'SVX'
+   },
+   {
+      cityName: 'Kazan',
+      countryName: 'Russia',
+      countryCode: 'RU',
+      airportName: 'Kazan International Airport',
+      iataCode: 'KZN'
+   }
+]
+const germany = [
+   {
+      cityName: 'Berlin',
+      countryName: 'Germany',
+      countryCode: 'DE',
+      airportName: 'Berlin Brandenburg Airport',
+      iataCode: 'BER'
+   },
+   {
+      cityName: 'Frankfurt',
+      countryName: 'Germany',
+      countryCode: 'DE',
+      airportName: 'Frankfurt Airport',
+      iataCode: 'FRA'
+   },
+   {
+      cityName: 'Munich',
+      countryName: 'Germany',
+      countryCode: 'DE',
+      airportName: 'Munich Airport',
+      iataCode: 'MUC'
+   },
+   {
+      cityName: 'Düsseldorf',
+      countryName: 'Germany',
+      countryCode: 'DE',
+      airportName: 'Düsseldorf Airport',
+      iataCode: 'DUS'
+   },
+   {
+      cityName: 'Hamburg',
+      countryName: 'Germany',
+      countryCode: 'DE',
+      airportName: 'Hamburg Airport',
+      iataCode: 'HAM'
+   },
+   {
+      cityName: 'Stuttgart',
+      countryName: 'Germany',
+      countryCode: 'DE',
+      airportName: 'Stuttgart Airport',
+      iataCode: 'STR'
+   }
+]
+const france = [
+   {
+      cityName: 'Paris',
+      countryName: 'France',
+      countryCode: 'FR',
+      airportName: 'Charles de Gaulle Airport',
+      iataCode: 'CDG'
+   },
+   {
+      cityName: 'Paris',
+      countryName: 'France',
+      countryCode: 'FR',
+      airportName: 'Orly Airport',
+      iataCode: 'ORY'
+   },
+   {
+      cityName: 'Nice',
+      countryName: 'France',
+      countryCode: 'FR',
+      airportName: 'Nice Côte d\'Azur Airport',
+      iataCode: 'NCE'
+   },
+   {
+      cityName: 'Lyon',
+      countryName: 'France',
+      countryCode: 'FR',
+      airportName: 'Lyon–Saint-Exupéry Airport',
+      iataCode: 'LYS'
+   },
+   {
+      cityName: 'Marseille',
+      countryName: 'France',
+      countryCode: 'FR',
+      airportName: 'Marseille Provence Airport',
+      iataCode: 'MRS'
+   },
+   {
+      cityName: 'Toulouse',
+      countryName: 'France',
+      countryCode: 'FR',
+      airportName: 'Toulouse Blagnac Airport',
+      iataCode: 'TLS'
+   }
+]
+const australia = [
+   {
+      cityName: 'Sydney',
+      countryName: 'Australia',
+      countryCode: 'AU',
+      airportName: 'Sydney Kingsford Smith Airport',
+      iataCode: 'SYD'
+   },
+   {
+      cityName: 'Melbourne',
+      countryName: 'Australia',
+      countryCode: 'AU',
+      airportName: 'Melbourne Airport',
+      iataCode: 'MEL'
+   },
+   {
+      cityName: 'Brisbane',
+      countryName: 'Australia',
+      countryCode: 'AU',
+      airportName: 'Brisbane Airport',
+      iataCode: 'BNE'
+   },
+   {
+      cityName: 'Perth',
+      countryName: 'Australia',
+      countryCode: 'AU',
+      airportName: 'Perth Airport',
+      iataCode: 'PER'
+   },
+   {
+      cityName: 'Adelaide',
+      countryName: 'Australia',
+      countryCode: 'AU',
+      airportName: 'Adelaide Airport',
+      iataCode: 'ADL'
+   },
+   {
+      cityName: 'Gold Coast',
+      countryName: 'Australia',
+      countryCode: 'AU',
+      airportName: 'Gold Coast Airport',
+      iataCode: 'OOL'
+   }
+]
+const vietnam = [
+   {
+      cityName: 'Hanoi',
+      countryName: 'Vietnam',
+      countryCode: 'VN',
+      airportName: 'Noi Bai International Airport',
+      iataCode: 'HAN'
+   },
+   {
+      cityName: 'Ho Chi Minh City',
+      countryName: 'Vietnam',
+      countryCode: 'VN',
+      airportName: 'Tan Son Nhat International Airport',
+      iataCode: 'SGN'
+   },
+   {
+      cityName: 'Da Nang',
+      countryName: 'Vietnam',
+      countryCode: 'VN',
+      airportName: 'Da Nang International Airport',
+      iataCode: 'DAD'
+   },
+   {
+      cityName: 'Nha Trang',
+      countryName: 'Vietnam',
+      countryCode: 'VN',
+      airportName: 'Cam Ranh International Airport',
+      iataCode: 'CXR'
+   },
+   {
+      cityName: 'Hai Phong',
+      countryName: 'Vietnam',
+      countryCode: 'VN',
+      airportName: 'Cat Bi International Airport',
+      iataCode: 'HPH'
+   },
+   {
+      cityName: 'Phu Quoc',
+      countryName: 'Vietnam',
+      countryCode: 'VN',
+      airportName: 'Phu Quoc International Airport',
+      iataCode: 'PQC'
+   }
+]
 
 demo.post('/admin-user', async c => {
    try {
@@ -259,18 +448,8 @@ demo.post('/admin-user', async c => {
 })
 demo.post('/city', async c => {
    try {
-      const cityList = [...india, ...japan, ...china]
-      console.log(cityList.length)
-
-      // cityList?.map(async (city) =>
-      //    await prisma.cities.create({
-      //       data: {
-      //          cityName: city.cityName,
-      //          countryName: city.countryName,
-      //          countryCode: city.countryCode,
-      //       }
-      //    })
-      // )
+      const cityList = [...india, ...japan, ...china, ...russia, ...germany, ...france, ...australia, ...vietnam]
+      const totalCity = cityList.length
       for (const city of cityList) {
          const check = await prisma.cities.findUnique({
             where: {
@@ -290,7 +469,7 @@ demo.post('/city', async c => {
             });
          }
       }
-      return c.json({ success: true, for: 'city' }, 200)
+      return c.json({ success: true, for: 'city', totalCity }, 200)
    } catch (error) {
       console.log(error)
       return c.json({ success: false, error }, 500)
@@ -298,29 +477,8 @@ demo.post('/city', async c => {
 })
 demo.post("/airport", async c => {
    try {
-      const airportList = [...india, ...japan, ...china]
-
-      // airportList?.map(async (airport) => {
-      //    const cityId = await prisma.cities.findUnique({
-      //       where: {
-      //          cityName_countryName: {
-      //             cityName: airport.cityName,
-      //             countryName: airport.countryName,
-      //          }
-      //       }
-      //    })
-      //    if (cityId?.id) {
-      //       await prisma.airports.create({
-      //          data: {
-      //             airportName: airport.airportName,
-      //             iataCode: airport.iataCode,
-      //             cityId: cityId.id
-      //          }
-      //       })
-      //    } else {
-
-      //    }
-      // })
+      const airportList = [...india, ...japan, ...china, ...russia, ...germany, ...france, ...australia, ...vietnam]
+      const totalAirport = airportList.length
       for (const airport of airportList) {
          const check = await prisma.cities.findUnique({
             where: {
@@ -341,7 +499,7 @@ demo.post("/airport", async c => {
          }
       }
 
-      return c.json({ success: true, for: 'airport' }, 200)
+      return c.json({ success: true, for: 'airport', totalAirport }, 200)
    } catch (error) {
       console.log(error)
       return c.json({ success: false, error }, 500)
@@ -376,6 +534,7 @@ demo.post("/airplane", async c => {
          { modelNumber: 'B767-400ER', manufacturer: 'Boeing', capacity: 375 },
          { modelNumber: 'A330-200F', manufacturer: 'Airbus', capacity: 70 }
       ];
+      const totalAirplane = airplaneModels.length
 
       airplaneModels?.map(async (airplane) =>
          await prisma.airplanes.create({
@@ -386,7 +545,7 @@ demo.post("/airplane", async c => {
             }
          })
       )
-      return c.json({ success: true, done: 'city' }, 200)
+      return c.json({ success: true, done: 'airplane', totalAirplane }, 200)
    } catch (error) {
       console.log(error)
       return c.json({ success: false, error }, 500)
