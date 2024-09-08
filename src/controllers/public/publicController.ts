@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import prisma from "../config/prisma";
 import bcrypt from "bcrypt";
 import { userAuthentication } from "@/middleware";
+import prisma from "@/config/prisma";
 
 const user = new Hono()
 
@@ -80,17 +80,20 @@ user.put("/change-password", userAuthentication, async (c: any) => {
       return c.json({ success: false, message: 'Password update failed' }, 500)
    }
 })
-user.get("/bookings-list", userAuthentication, async (c: any) => {
+user.get("/bookings-list/:status", userAuthentication, async (c: any) => {
    try {
-      const { status = 'all' } = c.req.query()
+      const { status } = c.req.param()
       const userId = c.user.id
       const conditions: any = {}
       if (status === 'all') {
          conditions.status = 'complete'
       } else if (status === 'failed') {
-         conditions.status = 'pending'
-         // conditions.status = { notIn: ['cancelled', 'completed'] }
-      } else {
+         conditions.status = 'failed'
+         // conditions.status = { notIn: ['cancelled', 'completed', 'pending'] }
+      } else if (status === 'cancelled') {
+         conditions.status = 'cancelled'
+      }
+      else {
          conditions.status = 'pending'
       }
       const user = await prisma.users.findUnique({
@@ -125,4 +128,5 @@ user.get("/bookings-list", userAuthentication, async (c: any) => {
 
    }
 })
+
 export default user

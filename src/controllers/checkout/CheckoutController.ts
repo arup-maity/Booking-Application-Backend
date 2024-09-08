@@ -1,8 +1,8 @@
 import { Hono } from "hono";
-import prisma from "../config/prisma";
 import Stripe from "stripe";
 import Razorpay from "razorpay";
 import crypto from "crypto";
+import prisma from "@/config/prisma";
 // 'sk_test_51KI5GSSERFuCCBscxmGoQZJCDW1k0FVKNexcDSSPJtLEtsyRlZabRX4H2zShAvXYavbkUWITlBBKjAO2i0SQzG8l00WsulcLrl'
 const checkout = new Hono()
 const stripe = new Stripe('sk_test_51KI5GSSERFuCCBscxmGoQZJCDW1k0FVKNexcDSSPJtLEtsyRlZabRX4H2zShAvXYavbkUWITlBBKjAO2i0SQzG8l00WsulcLrl')

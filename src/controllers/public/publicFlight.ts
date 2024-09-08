@@ -1,5 +1,5 @@
+import prisma from "@/config/prisma";
 import { Hono } from "hono";
-import prisma from "../config/prisma";
 
 const publicFlight = new Hono()
 

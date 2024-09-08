@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import prisma from "../config/prisma";
+import prisma from "../../config/prisma";
 import { userAuthentication } from "@/middleware";
 
 const adminBooking = new Hono()
@@ -36,6 +36,38 @@ adminBooking.get("/status-count", async c => {
          },
       })
       return c.json({ success: true, count }, 200)
+   } catch (error) {
+      return c.json({ success: false, error }, 500)
+   }
+})
+adminBooking.get("/details/:id", async c => {
+   try {
+      const id = c.req.param("id")
+      const booking = await prisma.bookings.findUnique({
+         where: {
+            id: +id
+         },
+         include: {
+            flight: {
+               include: {
+                  departureAirport: {
+                     include: {
+                        city: true
+                     }
+                  },
+                  arrivalAirport: {
+                     include: {
+                        city: true
+                     }
+                  },
+                  airplane: true
+               }
+            },
+            user: true,
+            payments: true
+         }
+      })
+      return c.json({ success: true, booking }, 200)
    } catch (error) {
       return c.json({ success: false, error }, 500)
    }

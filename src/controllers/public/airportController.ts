@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import prisma from "../config/prisma";
+import prisma from "../../config/prisma";
 
 const publicAirport = new Hono()
 

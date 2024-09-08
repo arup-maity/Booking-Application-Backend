@@ -3,12 +3,11 @@ import { sign, verify } from 'hono/jwt'
 import { getCookie, setCookie, } from 'hono/cookie'
 import { zValidator } from '@hono/zod-validator'
 import bcrypt from "bcrypt";
-import prisma from "../config/prisma";
-import { loginSchema } from "../validation/SchemaValidation";
+import prisma from "@/config/prisma";
 
 const auth = new Hono()
 
-auth.post("/admin/login", zValidator('json', loginSchema), async c => {
+auth.post("/admin/login", async c => {
    try {
       const body = await c.req.json()
       const user: any = await prisma.adminUser.findFirst({
@@ -117,7 +116,7 @@ auth.post("/user/login", async c => {
          domain: process.env.ENVIRONMENT === 'production' ? '.arupmaity.in' : 'localhost',
          path: '/',
          secure: true,
-         httpOnly: process.env.ENVIRONMENT === 'production' ? true : false,
+         httpOnly: false,
          sameSite: 'Strict',
          maxAge: 30 * 24 * 60 * 60, // Set maxAge in seconds (30 days)
       })

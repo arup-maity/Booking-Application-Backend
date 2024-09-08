@@ -158,6 +158,7 @@ model Flights {
 ///////////////////////////////////////////////////////////////////////
 model Bookings {
    id          Int           @id @default(autoincrement())
+   // cuid String @unique @default(cuid())
    flightId    Int
    flight      Flights       @relation(fields: [flightId], references: [id])
    userId      Int
@@ -222,6 +223,8 @@ enum paymentStatus {
 enum bookingStatus {
    complete
    cancelled
+   pending
+   failed
 }
 
 enum bookingProcessStatus {

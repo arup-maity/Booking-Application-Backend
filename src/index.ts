@@ -2,20 +2,19 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import dotenv from "dotenv";
-import city from "./city/controller";
-import adminUser from "./admin-user/controller";
-import auth from "./controllers/AuthController";
-import adminAirport from "./airport/adminController";
-import adminAirplane from "./airplanes/adminController";
-import adminFlight from "./flight/adminController";
-import publicAirport from "./airport/publicController";
-import publicFlight from "./flight/publicFlight";
-import checkout from "./checkout/CheckoutController";
-import userBooking from "./booking/bookingController";
-import user from "./user/publicController";
-import adminCityRouter from "./city/adminController";
+import adminUser from "./controllers/admin/UserController";
+import adminFlight from "./controllers/admin/FlightController";
+import publicAirport from "./controllers/public/airportController";
+import userBooking from "./controllers/booking/bookingController";
 import demo from "./demo/controller";
-import adminBooking from "./booking/adminBookingController";
+import adminBooking from "./controllers/booking/adminBookingController";
+import adminCityRouter from "./controllers/admin/CityController";
+import adminAirport from "./controllers/admin/AirportController";
+import adminAirplane from "./controllers/admin/AirplaneController";
+import auth from "./controllers/auth/AuthController";
+import user from "./controllers/public/publicController";
+import publicFlight from "./controllers/public/publicFlight";
+import checkout from "./controllers/checkout/CheckoutController";
 // 
 
 dotenv.config();
@@ -40,7 +39,6 @@ app.route("/api/auth", auth)
 app.route("/api/admin/user", adminUser)
 //
 app.route("/api/admin/city", adminCityRouter)
-app.route('/api/', city)
 // airport
 app.route("/api/admin/airport", adminAirport)
 app.route("/api/airport", publicAirport)

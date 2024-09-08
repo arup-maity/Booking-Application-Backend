@@ -7,20 +7,19 @@ const node_server_1 = require("@hono/node-server");
 const hono_1 = require("hono");
 const cors_1 = require("hono/cors");
 const dotenv_1 = __importDefault(require("dotenv"));
-const controller_1 = __importDefault(require("./city/controller"));
-const controller_2 = __importDefault(require("./admin-user/controller"));
-const AuthController_1 = __importDefault(require("./controllers/AuthController"));
-const adminController_1 = __importDefault(require("./airport/adminController"));
-const adminController_2 = __importDefault(require("./airplanes/adminController"));
-const adminController_3 = __importDefault(require("./flight/adminController"));
-const publicController_1 = __importDefault(require("./airport/publicController"));
-const publicFlight_1 = __importDefault(require("./flight/publicFlight"));
-const CheckoutController_1 = __importDefault(require("./checkout/CheckoutController"));
-const bookingController_1 = __importDefault(require("./booking/bookingController"));
-const publicController_2 = __importDefault(require("./user/publicController"));
-const adminController_4 = __importDefault(require("./city/adminController"));
-const controller_3 = __importDefault(require("./demo/controller"));
-const adminBookingController_1 = __importDefault(require("./booking/adminBookingController"));
+const UserController_1 = __importDefault(require("./controllers/admin/UserController"));
+const FlightController_1 = __importDefault(require("./controllers/admin/FlightController"));
+const airportController_1 = __importDefault(require("./controllers/public/airportController"));
+const bookingController_1 = __importDefault(require("./controllers/booking/bookingController"));
+const controller_1 = __importDefault(require("./demo/controller"));
+const adminBookingController_1 = __importDefault(require("./controllers/booking/adminBookingController"));
+const CityController_1 = __importDefault(require("./controllers/admin/CityController"));
+const AirportController_1 = __importDefault(require("./controllers/admin/AirportController"));
+const AirplaneController_1 = __importDefault(require("./controllers/admin/AirplaneController"));
+const AuthController_1 = __importDefault(require("./controllers/auth/AuthController"));
+const publicController_1 = __importDefault(require("./controllers/public/publicController"));
+const publicFlight_1 = __importDefault(require("./controllers/public/publicFlight"));
+const CheckoutController_1 = __importDefault(require("./controllers/checkout/CheckoutController"));
 // 
 dotenv_1.default.config();
 const app = new hono_1.Hono();
@@ -36,20 +35,19 @@ app.get("/", c => {
 // auth
 app.route("/api/auth", AuthController_1.default);
 //
-app.route("/api/admin/user", controller_2.default);
+app.route("/api/admin/user", UserController_1.default);
 //
-app.route("/api/admin/city", adminController_4.default);
-app.route('/api/', controller_1.default);
+app.route("/api/admin/city", CityController_1.default);
 // airport
-app.route("/api/admin/airport", adminController_1.default);
-app.route("/api/airport", publicController_1.default);
+app.route("/api/admin/airport", AirportController_1.default);
+app.route("/api/airport", airportController_1.default);
 //
 // user
-app.route("/api/user", publicController_2.default);
+app.route("/api/user", publicController_1.default);
 // airplanes
-app.route("/api/admin/airplane", adminController_2.default);
+app.route("/api/admin/airplane", AirplaneController_1.default);
 // flight
-app.route("/api/admin/flight", adminController_3.default);
+app.route("/api/admin/flight", FlightController_1.default);
 app.route("/api/flight", publicFlight_1.default);
 // checkout
 app.route("/api/checkout", CheckoutController_1.default);
@@ -57,7 +55,7 @@ app.route("/api/checkout", CheckoutController_1.default);
 app.route("/api/bookings", bookingController_1.default);
 app.route("/api/admin/bookings", adminBookingController_1.default);
 // demo
-app.route("/api/demo", controller_3.default);
+app.route("/api/demo", controller_1.default);
 const port = 8080;
 console.log(`${process.env.CHECK_ENV} server is running on port ${port}`);
 (0, node_server_1.serve)({

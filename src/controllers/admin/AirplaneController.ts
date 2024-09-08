@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import prisma from "../config/prisma";
 import { adminAuthentication } from "@/middleware";
+import prisma from "@/config/prisma";
 
 const adminAirplane = new Hono()
 
@@ -106,6 +106,14 @@ adminAirplane.get("all-airplanes", adminAuthentication, async c => {
          where: conditions
       })
       return c.json({ success: true, airplanes, count }, 200)
+   } catch (error) {
+      return c.json({ success: false, error }, 500)
+   }
+})
+adminAirplane.get("/total-airplane-services", adminAuthentication, async c => {
+   try {
+      const totalAirplane = await prisma.airplanes.count()
+      return c.json({ success: true, totalAirplane }, 200)
    } catch (error) {
       return c.json({ success: false, error }, 500)
    }

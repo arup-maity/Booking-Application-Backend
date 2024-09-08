@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import prisma from "../config/prisma";
-import { createSecret } from "@/checkout/stripe";
+import prisma from "../../config/prisma";
+import { createSecret } from "@/controllers/checkout/stripe";
 import { userAuthentication } from "@/middleware";
 
 const userBooking = new Hono()
@@ -143,5 +143,56 @@ userBooking.get("/success-booking/:id", async c => {
       return c.json({ success: false, error }, 500)
    }
 })
+userBooking.get("/details/:id", async c => {
+   try {
+      const id = c.req.param("id")
+      const booking = await prisma.bookings.findUnique({
+         where: {
+            id: +id
+         },
+         include: {
+            flight: {
+               include: {
+                  departureAirport: {
+                     include: {
+                        city: true
+                     }
+                  },
+                  arrivalAirport: {
+                     include: {
+                        city: true
+                     }
+                  },
+                  airplane: true
+               }
+            },
+            user: true,
+            payments: true
+         }
+      })
+      return c.json({ success: true, booking }, 200)
+   } catch (error) {
+      return c.json({ success: false, error }, 500)
+   }
+})
+userBooking.get("/cancel-booking/:id", userAuthentication, async c => {
+   try {
+      const id = c.req.param("id")
+      const user = c.user
 
+      const cancelBooking = await prisma.bookings.update({
+         where: {
+            id: +id,
+            userId: +user.id
+         },
+         data: {
+            status: 'cancelled'
+         }
+      })
+
+      return c.json({ success: true, cancelBooking }, 200)
+   } catch (error) {
+      return c.json({ success: true, error }, 500)
+   }
+})
 export default userBooking

@@ -1,8 +1,8 @@
 import { Hono } from "hono";
 import { zValidator } from '@hono/zod-validator'
 import bcrypt from "bcrypt";
-import prisma from "../config/prisma";
-import { userSchema } from "./SchemaValidation";
+import prisma from "../../config/prisma";
+import { userSchema } from "../../validation/SchemaValidation";
 
 const adminUser = new Hono()
 
