@@ -10,7 +10,7 @@ adminUser.post("/create-user", zValidator('json', userSchema), async c => {
    try {
       const body = await c.req.json()
       // check email exists
-      const email = await prisma.adminUser.findUnique({
+      const email = await prisma.users.findUnique({
          where: {
             email: body.email
          }
@@ -22,7 +22,7 @@ adminUser.post("/create-user", zValidator('json', userSchema), async c => {
       const salt = bcrypt.genSaltSync(16);
       const hashPassword = bcrypt.hashSync(body.password, salt);
       // create admin user
-      const adminUser = await prisma.adminUser.create({
+      const adminUser = await prisma.users.create({
          data: {
             firstName: body.firstName,
             lastName: body.lastName,
@@ -42,7 +42,7 @@ adminUser.post("/create-user", zValidator('json', userSchema), async c => {
 adminUser.delete("/delete-user/:id", async c => {
    try {
       const id = c.req.param("id")
-      const adminUser = await prisma.adminUser.delete({
+      const adminUser = await prisma.users.delete({
          where: {
             id: +id
          }
@@ -55,7 +55,7 @@ adminUser.delete("/delete-user/:id", async c => {
 adminUser.post("/delete-users/multiple", async c => {
    try {
       const body = await c.req.json()
-      const adminUsers = await prisma.adminUser.deleteMany({
+      const adminUsers = await prisma.users.deleteMany({
          where: {
             id: { in: body.rows }
          }
@@ -84,13 +84,13 @@ adminUser.get("/all-users", async c => {
       if (column && sortOrder) {
          query.orderBy = { [column]: sortOrder }
       }
-      const users = await prisma.adminUser.findMany({
+      const users = await prisma.users.findMany({
          where: conditions,
          take: +limit,
          skip: (+page - 1) * +limit,
          ...query
       })
-      const count = await prisma.adminUser.count({
+      const count = await prisma.users.count({
          where: conditions
       })
       return c.json({ success: true, users, count }, 200)
@@ -102,7 +102,7 @@ adminUser.get("/all-users", async c => {
 adminUser.put("/update-user-role", async c => {
    try {
       const body = await c.req.json()
-      const adminUser = await prisma.adminUser.update({
+      const adminUser = await prisma.users.update({
          where: {
             id: body.id
          },

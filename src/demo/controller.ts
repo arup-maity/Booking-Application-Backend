@@ -417,7 +417,7 @@ demo.post('/admin-user', async c => {
    try {
       const body = await c.req.json()
       // check email exists
-      const email = await prisma.adminUser.findUnique({
+      const email = await prisma.users.findUnique({
          where: {
             email: body.email
          }
@@ -429,13 +429,13 @@ demo.post('/admin-user', async c => {
       const salt = bcrypt.genSaltSync(16);
       const hashPassword = bcrypt.hashSync(body.password, salt);
       // create admin user
-      const adminUser = await prisma.adminUser.create({
+      const adminUser = await prisma.users.create({
          data: {
             firstName: body.firstName,
             lastName: body.lastName,
             email: body.email,
             role: body.role,
-            adminUserAuth: {
+            userAuth: {
                create: { password: hashPassword, method: 'password' }
             }
          }
@@ -552,3 +552,387 @@ demo.post("/airplane", async c => {
    }
 })
 export default demo
+
+
+
+// Mumbai to Delhi
+
+// Mumbai to Bengaluru
+
+// Mumbai to Chennai
+
+// Mumbai to Kolkata
+
+// Mumbai to Hyderabad
+
+// Mumbai to Ahmedabad
+
+// Mumbai to Pune
+
+// Mumbai to Kochi
+
+// Mumbai to Goa
+
+// Delhi to Mumbai
+
+// Delhi to Bengaluru
+
+// Delhi to Chennai
+
+// Delhi to Kolkata
+
+// Delhi to Hyderabad
+
+// Delhi to Ahmedabad
+
+// Delhi to Pune
+
+// Delhi to Kochi
+
+// Delhi to Goa
+
+// Bengaluru to Mumbai
+
+// Bengaluru to Delhi
+
+// Bengaluru to Chennai
+
+// Bengaluru to Kolkata
+
+// Bengaluru to Hyderabad
+
+// Bengaluru to Ahmedabad
+
+// Bengaluru to Pune
+
+// Bengaluru to Kochi
+
+// Bengaluru to Goa
+
+// Chennai to Mumbai
+
+// Chennai to Delhi
+
+// Chennai to Bengaluru
+
+// Chennai to Kolkata
+
+// Chennai to Hyderabad
+
+// Chennai to Ahmedabad
+
+// Chennai to Pune
+
+// Chennai to Kochi
+
+// Chennai to Goa
+
+// Kolkata to Mumbai
+
+// Kolkata to Delhi
+
+// Kolkata to Bengaluru
+
+// Kolkata to Chennai
+
+// Kolkata to Hyderabad
+
+// Kolkata to Ahmedabad
+
+// Kolkata to Pune
+
+// Kolkata to Kochi
+
+// Kolkata to Goa
+
+// Hyderabad to Mumbai
+
+// Hyderabad to Delhi
+
+// Hyderabad to Bengaluru
+
+// Hyderabad to Chennai
+
+// Hyderabad to Kolkata
+
+// Hyderabad to Ahmedabad
+
+// Hyderabad to Pune
+
+// Hyderabad to Kochi
+
+// Hyderabad to Goa
+
+// Ahmedabad to Mumbai
+
+// Ahmedabad to Delhi
+
+// Ahmedabad to Bengaluru
+
+// Ahmedabad to Chennai
+
+// Ahmedabad to Kolkata
+
+// Ahmedabad to Hyderabad
+
+// Ahmedabad to Pune
+
+// Ahmedabad to Kochi
+
+// Ahmedabad to Goa
+
+// Pune to Mumbai
+
+// Pune to Delhi
+
+// Pune to Bengaluru
+
+// Pune to Chennai
+
+// Pune to Kolkata
+
+// Pune to Hyderabad
+
+// Pune to Ahmedabad
+
+// Pune to Kochi
+
+// Pune to Goa
+
+// Kochi to Mumbai
+
+// Kochi to Delhi
+
+// Kochi to Bengaluru
+
+// Kochi to Chennai
+
+// Kochi to Kolkata
+
+// Kochi to Hyderabad
+
+// Kochi to Ahmedabad
+
+// Kochi to Pune
+
+// Kochi to Goa
+
+// Goa to Mumbai
+
+// Goa to Delhi
+
+// Goa to Bengaluru
+
+// Goa to Chennai
+
+// Goa to Kolkata
+
+// Goa to Hyderabad
+
+// Goa to Ahmedabad
+
+// Goa to Pune
+
+// Goa to Kochi
+
+
+
+// AI101
+
+// AI102
+
+// AI103
+
+// AI104
+
+// AI105
+
+// AI106
+
+// AI107
+
+// AI108
+
+// AI109
+
+// AI110
+
+// 6E201
+
+// 6E202
+
+// 6E203
+
+// 6E204
+
+// 6E205
+
+// 6E206
+
+// 6E207
+
+// 6E208
+
+// 6E209
+
+// 6E210
+
+// SG301
+
+// SG302
+
+// SG303
+
+// SG304
+
+// SG305
+
+// SG306
+
+// SG307
+
+// SG308
+
+// SG309
+
+// SG310
+
+// UK401
+
+// UK402
+
+// UK403
+
+// UK404
+
+// UK405
+
+// UK406
+
+// UK407
+
+// UK408
+
+// UK409
+
+// UK410
+
+// G8401
+
+// G8402
+
+// G8403
+
+// G8404
+
+// G8405
+
+// G8406
+
+// G8407
+
+// G8408
+
+// G8409
+
+// G8410
+
+// AI501
+
+// AI502
+
+// AI503
+
+// AI504
+
+// AI505
+
+// AI506
+
+// AI507
+
+// AI508
+
+// AI509
+
+// AI510
+
+// 6E601
+
+// 6E602
+
+// 6E603
+
+// 6E604
+
+// 6E605
+
+// 6E606
+
+// 6E607
+
+// 6E608
+
+// 6E609
+
+// 6E610
+
+// SG701
+
+// SG702
+
+// SG703
+
+// SG704
+
+// SG705
+
+// SG706
+
+// SG707
+
+// SG708
+
+// SG709
+
+// SG710
+
+// UK801
+
+// UK802
+
+// UK803
+
+// UK804
+
+// UK805
+
+// UK806
+
+// UK807
+
+// UK808
+
+// UK809
+
+// UK810
+
+// G8501
+
+// G8502
+
+// G8503
+
+// G8504
+
+// G8505
+
+// G8506
+
+// G8507
+
+// G8508
+
+// G8509
+
+// G8510

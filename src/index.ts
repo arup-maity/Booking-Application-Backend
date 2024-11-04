@@ -59,7 +59,7 @@ app.route("/api/admin/bookings", adminBooking)
 app.route("/api/demo", demo)
 
 
-const port = 8080;
+const port = Number(process.env.PORT || 8080);
 console.log(`${process.env.CHECK_ENV} server is running on port ${port}`);
 
 serve({

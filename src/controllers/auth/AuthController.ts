@@ -10,24 +10,24 @@ const auth = new Hono()
 auth.post("/admin/login", async c => {
    try {
       const body = await c.req.json()
-      const user: any = await prisma.adminUser.findFirst({
+      const user: any = await prisma.users.findFirst({
          where: {
             email: body.email
          },
          include: {
-            adminUserAuth: true
+            userAuth: true
          }
       })
       if (!user) return c.json({ success: false, message: 'User not found' }, 409)
-      const isPasswordValid = await bcrypt.compareSync(body.password, user?.adminUserAuth.password)
+      const isPasswordValid = await bcrypt.compareSync(body.password, user?.userAuth.password)
       if (!isPasswordValid) return c.json({ success: false, message: 'Email and Password not match' })
       const payload = {
          id: user?.id,
-         name: `${user?.firstName + ' ' + user?.lastName}`,
+         name: user?.fullName,
          role: user?.role,
          accessPurpose: 'admin',
          purpose: 'login',
-         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 6, // Token expires in 5 minutes
+         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 6, 
       }
       const token = await sign(payload, process.env.JWT_SECRET as string)
       // Regular cookies
