@@ -22,7 +22,7 @@ adminUser.post("/create-user", (0, zod_validator_1.zValidator)('json', SchemaVal
     try {
         const body = yield c.req.json();
         // check email exists
-        const email = yield prisma_1.default.adminUser.findUnique({
+        const email = yield prisma_1.default.users.findUnique({
             where: {
                 email: body.email
             }
@@ -34,7 +34,7 @@ adminUser.post("/create-user", (0, zod_validator_1.zValidator)('json', SchemaVal
         const salt = bcrypt_1.default.genSaltSync(16);
         const hashPassword = bcrypt_1.default.hashSync(body.password, salt);
         // create admin user
-        const adminUser = yield prisma_1.default.adminUser.create({
+        const adminUser = yield prisma_1.default.users.create({
             data: {
                 firstName: body.firstName,
                 lastName: body.lastName,
@@ -55,7 +55,7 @@ adminUser.post("/create-user", (0, zod_validator_1.zValidator)('json', SchemaVal
 adminUser.delete("/delete-user/:id", (c) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = c.req.param("id");
-        const adminUser = yield prisma_1.default.adminUser.delete({
+        const adminUser = yield prisma_1.default.users.delete({
             where: {
                 id: +id
             }
@@ -69,7 +69,7 @@ adminUser.delete("/delete-user/:id", (c) => __awaiter(void 0, void 0, void 0, fu
 adminUser.post("/delete-users/multiple", (c) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = yield c.req.json();
-        const adminUsers = yield prisma_1.default.adminUser.deleteMany({
+        const adminUsers = yield prisma_1.default.users.deleteMany({
             where: {
                 id: { in: body.rows }
             }
@@ -99,8 +99,8 @@ adminUser.get("/all-users", (c) => __awaiter(void 0, void 0, void 0, function* (
         if (column && sortOrder) {
             query.orderBy = { [column]: sortOrder };
         }
-        const users = yield prisma_1.default.adminUser.findMany(Object.assign({ where: conditions, take: +limit, skip: (+page - 1) * +limit }, query));
-        const count = yield prisma_1.default.adminUser.count({
+        const users = yield prisma_1.default.users.findMany(Object.assign({ where: conditions, take: +limit, skip: (+page - 1) * +limit }, query));
+        const count = yield prisma_1.default.users.count({
             where: conditions
         });
         return c.json({ success: true, users, count }, 200);
@@ -113,7 +113,7 @@ adminUser.get("/all-users", (c) => __awaiter(void 0, void 0, void 0, function* (
 adminUser.put("/update-user-role", (c) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = yield c.req.json();
-        const adminUser = yield prisma_1.default.adminUser.update({
+        const adminUser = yield prisma_1.default.users.update({
             where: {
                 id: body.id
             },

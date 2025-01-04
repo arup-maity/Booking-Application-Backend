@@ -47,19 +47,34 @@ publicAirport.get("/read-airport/:code", async c => {
 })
 publicAirport.get("/suggested-departure-airports", async c => {
    try {
+      const today = new Date();
+      const threeMonthsFromNow = new Date(today);
+      threeMonthsFromNow.setMonth(today.getMonth() + 3);
+
       const airports = await prisma.flights.findMany({
-         // where: {
-         //    departureTime: { gte: new Date() }
-         // },
-         take: 5,
-         include: {
+         where: {
+            departureTime: {
+               gte: today,
+               lte: threeMonthsFromNow,
+            },
+         },
+         take: 10,
+         select: {
             departureAirport: {
-               include: {
-                  city: true
+               select: {
+                  airportName: true,
+                  iataCode: true,
+                  city: {
+                     select: {
+                        cityName: true
+                     }
+                  }
                }
             }
-         }
+         },
+         distinct: ['departureAirportId'],
       })
+
       return c.json({ success: true, airports }, 200)
    } catch (error) {
       console.log(error)
@@ -68,18 +83,32 @@ publicAirport.get("/suggested-departure-airports", async c => {
 })
 publicAirport.get("/suggested-arrival-airports", async c => {
    try {
+      const today = new Date();
+      const threeMonthsFromNow = new Date(today);
+      threeMonthsFromNow.setMonth(today.getMonth() + 3);
+
       const airports = await prisma.flights.findMany({
-         // where: {
-         //    departureTime: { gte: new Date() }
-         // },
-         take: 5,
-         include: {
+         where: {
+            arrivalTime: {
+               gte: today,
+               lte: threeMonthsFromNow,
+            },
+         },
+         take: 10,
+         select: {
             arrivalAirport: {
-               include: {
-                  city: true
+               select: {
+                  airportName: true,
+                  iataCode: true,
+                  city: {
+                     select: {
+                        cityName: true
+                     }
+                  }
                }
             }
-         }
+         },
+         distinct: ['arrivalAirportId'],
       })
       return c.json({ success: true, airports }, 200)
    } catch (error) {
@@ -87,7 +116,6 @@ publicAirport.get("/suggested-arrival-airports", async c => {
       return c.json({ success: false, error }, 500)
    }
 })
-
 
 
 export default publicAirport

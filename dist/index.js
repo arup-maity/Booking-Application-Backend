@@ -56,7 +56,7 @@ app.route("/api/bookings", bookingController_1.default);
 app.route("/api/admin/bookings", adminBookingController_1.default);
 // demo
 app.route("/api/demo", controller_1.default);
-const port = 8080;
+const port = Number(process.env.PORT || 8080);
 console.log(`${process.env.CHECK_ENV} server is running on port ${port}`);
 (0, node_server_1.serve)({
     fetch: app.fetch,

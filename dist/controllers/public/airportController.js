@@ -60,4 +60,74 @@ publicAirport.get("/read-airport/:code", (c) => __awaiter(void 0, void 0, void 0
         return c.json({ success: false, error }, 500);
     }
 }));
+publicAirport.get("/suggested-departure-airports", (c) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const today = new Date();
+        const threeMonthsFromNow = new Date(today);
+        threeMonthsFromNow.setMonth(today.getMonth() + 3);
+        const airports = yield prisma_1.default.flights.findMany({
+            where: {
+                departureTime: {
+                    gte: today,
+                    lte: threeMonthsFromNow,
+                },
+            },
+            take: 10,
+            select: {
+                departureAirport: {
+                    select: {
+                        airportName: true,
+                        iataCode: true,
+                        city: {
+                            select: {
+                                cityName: true
+                            }
+                        }
+                    }
+                }
+            },
+            distinct: ['departureAirportId'],
+        });
+        return c.json({ success: true, airports }, 200);
+    }
+    catch (error) {
+        console.log(error);
+        return c.json({ success: false, error }, 500);
+    }
+}));
+publicAirport.get("/suggested-arrival-airports", (c) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const today = new Date();
+        const threeMonthsFromNow = new Date(today);
+        threeMonthsFromNow.setMonth(today.getMonth() + 3);
+        const airports = yield prisma_1.default.flights.findMany({
+            where: {
+                arrivalTime: {
+                    gte: today,
+                    lte: threeMonthsFromNow,
+                },
+            },
+            take: 10,
+            select: {
+                arrivalAirport: {
+                    select: {
+                        airportName: true,
+                        iataCode: true,
+                        city: {
+                            select: {
+                                cityName: true
+                            }
+                        }
+                    }
+                }
+            },
+            distinct: ['arrivalAirportId'],
+        });
+        return c.json({ success: true, airports }, 200);
+    }
+    catch (error) {
+        console.log(error);
+        return c.json({ success: false, error }, 500);
+    }
+}));
 exports.default = publicAirport;
