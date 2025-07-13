@@ -130,6 +130,8 @@ demo.post("/flight", async c => {
          return letters + '-' + digits + '-' + `${dId}${aId}`;
       }
 
+      var count = 0
+
       for (const time of timeStamp) {
          for (const airport of indiaIdCombination) {
 
@@ -159,10 +161,11 @@ demo.post("/flight", async c => {
                   boardingGate: randomGate
                }
             })
-
+            count += 1
          }
       }
 
+      console.log(count)
 
 
       return c.json({ success: true }, 200)
