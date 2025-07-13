@@ -21,20 +21,18 @@ model Users {
    firstName      String?
    lastName       String?
    email          String           @unique
-   mobileNumber   String?          @unique
+   phone          String?          @unique
    role           UserRole         @default(user)
    gender         String?
    dob            String?
-   profileImage   String?
+   avatar         String?
    address        Json?
    userAuth       UserAuth?
    userAddress    UserAddress[]
    bookings       Bookings[]
-   BookingProcess BookingProcess[]
+   bookingProcess BookingProcess[]
    createdAt      DateTime         @default(now())
    updatedAt      DateTime         @updatedAt
-
-   @@map("users")
 }
 
 enum UserRole {
@@ -63,37 +61,6 @@ model UserAddress {
    user      Users   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
-// // ======================= Admin User Table ==============
-// model AdminUser {
-//    id            Int            @id @default(autoincrement())
-//    firstName     String
-//    lastName      String
-//    email         String         @unique
-//    role          AdminUserRole  @default(admin)
-//    profileImage  String?
-//    adminUserAuth AdminUserAuth?
-//    createdAt     DateTime       @default(now())
-//    updatedAt     DateTime       @updatedAt
-
-//    @@map("admin_user")
-// }
-
-// model AdminUserAuth {
-//    id       Int       @id @default(autoincrement())
-//    password String?
-//    method   String
-//    userId   Int       @unique
-//    user     AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-// }
-
-// enum AdminUserRole {
-//    administrator
-//    admin
-//    customerSupport
-//    technicalSupport
-//    salesAgent
-// }
-
 // ======================= City Table and Airport Table ==============
 model Cities {
    id          Int        @id @default(autoincrement())
@@ -106,6 +73,7 @@ model Cities {
 
    @@unique([cityName, countryName])
    @@unique([cityName, countryCode])
+   @@index([id, countryCode])
 }
 
 model Airports {
@@ -113,6 +81,8 @@ model Airports {
    airportName     String
    iataCode        String    @unique
    address         String?
+   latitude        Float
+   longitude       Float
    cityId          Int
    city            Cities    @relation(fields: [cityId], references: [id], onDelete: Cascade)
    departureFlight Flights[] @relation("departureAirport_airport")
@@ -121,6 +91,7 @@ model Airports {
    updatedAt       DateTime  @updatedAt
 
    @@unique([iataCode, cityId])
+   @@index([id, cityId, iataCode])
 }
 
 // ======================= Airplane Table ==============
@@ -129,12 +100,13 @@ model Airplanes {
    modelNumber  String    @unique
    manufacturer String
    capacity     Int?
-   Seats        Seats?
-   Flights      Flights[]
+   seats        Seats?
+   flights      Flights[]
    createdAt    DateTime  @default(now())
    updatedAt    DateTime  @updatedAt
 
    @@unique([modelNumber, manufacturer])
+   @@index([id, modelNumber])
 }
 
 model Seats {
@@ -154,16 +126,19 @@ model Flights {
    departureAirport   Airports         @relation(name: "departureAirport_airport", fields: [departureAirportId], references: [id], onDelete: Cascade)
    arrivalAirportId   Int
    arrivalAirport     Airports         @relation(name: "arrivalAirport_airport", fields: [arrivalAirportId], references: [id], onDelete: Cascade)
-   departureTime      DateTime
-   arrivalTime        DateTime
+   departureScheduled DateTime
+   arrivalScheduled   DateTime
    airplaneId         Int
    airplane           Airplanes        @relation(fields: [airplaneId], references: [id], onDelete: Cascade, onUpdate: Cascade)
    price              Int
    boardingGate       String
-   Bookings           Bookings[]
-   BookingProcess     BookingProcess[]
+   bookings           Bookings[]
+   bookingProcess     BookingProcess[]
    createdAt          DateTime         @default(now())
    updatedAt          DateTime         @updatedAt
+
+   @@unique([id, flightNumber, departureAirportId, arrivalAirportId])
+   @@index([id, arrivalAirportId, departureAirportId])
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -206,7 +181,7 @@ model BookingProcess {
    passengers      Json
    totalCost       Decimal              @default(0.00)
    bookingDate     DateTime             @default(now())
-   PaymentsProcess PaymentsProcess?
+   paymentsProcess PaymentsProcess?
    createdAt       DateTime             @default(now())
    updatedAt       DateTime             @updatedAt
 

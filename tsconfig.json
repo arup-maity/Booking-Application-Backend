@@ -13,16 +13,17 @@
 // }
 
 {
-   "compilerOptions": {
-     "target": "ES6",
-     "module": "commonjs",
-     "outDir": "./dist",
-     "rootDir": "./src",
-     "esModuleInterop": true,
-     "strictNullChecks": true,
- 
-     "paths": {
-       "@/*": ["./src/*"]
-     }
-   }
- }
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "strict": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}

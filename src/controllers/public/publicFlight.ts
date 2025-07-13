@@ -52,7 +52,7 @@ publicFlight.get("/search-flights", async c => {
          }
       }
       if (query.departure) {
-         conditions.departureTime = {
+         conditions.departureScheduled = {
             gte: new Date(query.departure)
          }
       }

@@ -4,7 +4,6 @@ import { cors } from "hono/cors";
 import dotenv from "dotenv";
 import adminUser from "./controllers/admin/UserController";
 import adminFlight from "./controllers/admin/FlightController";
-import publicAirport from "./controllers/public/airportController";
 import userBooking from "./controllers/booking/bookingController";
 import demo from "./demo/controller";
 import adminBooking from "./controllers/booking/adminBookingController";
@@ -15,6 +14,7 @@ import auth from "./controllers/auth/AuthController";
 import user from "./controllers/public/publicController";
 import publicFlight from "./controllers/public/publicFlight";
 import checkout from "./controllers/checkout/CheckoutController";
+import publicAirport from "./controllers/airport/public-airport";
 // 
 
 dotenv.config();

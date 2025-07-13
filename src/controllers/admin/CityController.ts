@@ -1,10 +1,12 @@
 import { Hono } from "hono";
 import { adminAuthentication } from "@/middleware";
 import prisma from "@/config/prisma";
+import { zValidator } from '@hono/zod-validator'
+import { createCityValidation, deleteCityValidation, readCityValidation, updateCityValidation } from "@/validation/city-validation";
 
 const adminCityRouter = new Hono()
 
-adminCityRouter.post('/create-city', adminAuthentication, async c => {
+adminCityRouter.post('/create-city', zValidator('json', createCityValidation), adminAuthentication, async c => {
    try {
       const body = await c.req.json()
       // check cityCode exists
@@ -27,7 +29,7 @@ adminCityRouter.post('/create-city', adminAuthentication, async c => {
       return c.json({ success: false, error }, 500)
    }
 })
-adminCityRouter.put("/update-city/:id", adminAuthentication, async c => {
+adminCityRouter.put("/update-city/:id", zValidator('json', updateCityValidation), adminAuthentication, async c => {
    try {
       const id = c.req.param("id")
       const body = await c.req.json()
@@ -42,7 +44,7 @@ adminCityRouter.put("/update-city/:id", adminAuthentication, async c => {
       return c.json({ success: false, error }, 500)
    }
 })
-adminCityRouter.get("/read-city/:id", adminAuthentication, async c => {
+adminCityRouter.get("/read-city/:id", zValidator('param', readCityValidation), adminAuthentication, async c => {
    try {
       const id = c.req.param("id")
       const city = await prisma.cities.findUnique({
@@ -56,7 +58,7 @@ adminCityRouter.get("/read-city/:id", adminAuthentication, async c => {
       return c.json({ success: false, error }, 500)
    }
 })
-adminCityRouter.delete("/delete-city/:id", adminAuthentication, async c => {
+adminCityRouter.delete("/delete-city/:id", zValidator('param', deleteCityValidation), adminAuthentication, async c => {
    try {
       const id = c.req.param("id")
       const city = await prisma.cities.delete({

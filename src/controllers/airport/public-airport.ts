@@ -45,6 +45,33 @@ publicAirport.get("/read-airport/:code", async c => {
       return c.json({ success: false, error }, 500)
    }
 })
+publicAirport.get("/airport-details", async c => {
+   try {
+      const query = c.req.query()
+      console.log(query)
+      const formAirport = await prisma.airports.findUnique({
+         where: {
+            iataCode: query?.fromAirport
+         },
+         include: {
+            city: true
+         }
+      })
+      const toAirport = await prisma.airports.findUnique({
+         where: {
+            iataCode: query?.toAirport
+         },
+         include: {
+            city: true
+         }
+      })
+      if (!formAirport || !toAirport) return c.json({ success: false, message: 'Not found airport' }, 409)
+      return c.json({ success: true, formAirport, toAirport }, 200)
+   } catch (error) {
+      console.log(error)
+      return c.json({ success: false, error }, 500)
+   }
+})
 publicAirport.get("/suggested-departure-airports", async c => {
    try {
       const today = new Date();
@@ -53,10 +80,15 @@ publicAirport.get("/suggested-departure-airports", async c => {
 
       const airports = await prisma.flights.findMany({
          where: {
-            departureTime: {
-               gte: today,
-               lte: threeMonthsFromNow,
-            },
+            // departureScheduled: {
+            //    gte: today,
+            //    lte: threeMonthsFromNow,
+            // },
+            departureAirport: {
+               city: {
+                  countryCode: "IN"
+               }
+            }
          },
          take: 10,
          select: {
@@ -89,10 +121,15 @@ publicAirport.get("/suggested-arrival-airports", async c => {
 
       const airports = await prisma.flights.findMany({
          where: {
-            arrivalTime: {
-               gte: today,
-               lte: threeMonthsFromNow,
-            },
+            // arrivalScheduled: {
+            //    gte: today,
+            //    lte: threeMonthsFromNow,
+            // },
+            arrivalAirport: {
+               city: {
+                  countryCode: "IN"
+               }
+            }
          },
          take: 10,
          select: {
